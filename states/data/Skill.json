@@ -1,0 +1,29 @@
+{
+    "skills" :
+    [
+        { "Nom" : "coup d estoc",
+          "stat" :
+            {       
+                "PA":500,
+                "FOR": 1,
+                "effet" : "aucun",
+                "Cas" : 1,
+                "CD": "1",
+                "Portee":1,
+                "KB" : 0
+            }
+        } ,
+        { "Nom" : "Frappe verticale",
+          "stat":
+            {
+                "PA":1000,
+                "FOR": 3,
+                "effet" : "saignement",
+                "Cas" : 1,
+                "CD": "1",
+                "Portee":1,
+                "KB":1
+            }
+        }
+    ]
+}
