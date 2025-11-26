@@ -31,10 +31,8 @@ class Matrice_Bagarre:
 
         self.echiquier[self.player.x][self.player.y] = self.player.valeur
         for Ennemis in self.Acteurs["Ennemis"]:
-            print(Ennemis)
             self.echiquier[Ennemis.x][Ennemis.y] = Ennemis.valeur
             
-        print(self.echiquier)
 
 
 

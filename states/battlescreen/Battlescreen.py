@@ -10,7 +10,7 @@ import random as rd
 
 from settings import *
 from states.battlescreen.ATB import *
-from .BattleSys import control_joueur
+from .BattleSys import control_joueur, logique_de_combat
 from .battlelogic import Matrice_Bagarre
 
 
@@ -26,6 +26,7 @@ class Level(BaseState):
         self.time = pygame.time.Clock()
 
         self.matrice = Matrice_Bagarre()
+        self.BL = logique_de_combat
         
 
 
@@ -238,9 +239,9 @@ class Level(BaseState):
             #
                 if self.Entites[i].hit == True:
                     if pygame.time.get_ticks() - self.starttime <= 250:
-                        surface.blit(self.display_dmg(1),(self.Entites[i].rect.center)+(0,1000))
+                        surface.blit(self.display_dmg(self.BL(self.player,self.Entites[i],self.player.Attaque_index).calcul_dommage()),(self.Entites[i].rect.center)+(0,1000))
                     else:
-                        surface.blit(self.display_dmg(self.player.Attaque.stat),(self.Entites[i].rect.center))
+                        surface.blit(self.display_dmg(self.BL(self.player,self.Entites[i],self.player.Attaque_index).calcul_dommage()),(self.Entites[i].rect.center))
                     if pygame.time.get_ticks() - self.starttime >= 500:
                         self.Entites[i].hit = False
 #
@@ -308,8 +309,8 @@ class Level(BaseState):
 
             elif event.key == pygame.K_RETURN:
                 skill = self.player.Attaque
-                print(skill)
-                print(skill.names[self.player.Attaque_index])
+                #print(skill)
+                #print(skill.names[self.player.Attaque_index])
                 
                 self.control.logique_valider(event,self.player,self.Entites[self.Index_cible],cout_total,self.active_index,self.Entites,self.player.Attaque_index)
                 self.starttime = pygame.time.get_ticks()

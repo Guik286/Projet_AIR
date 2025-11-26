@@ -192,6 +192,10 @@ class logique_de_combat:
             #    if acteur.hit == True:
        
 
+    def calcul_dommage(self):
+        self.damage = self.striker.force*2 + self.skill_set.stat[self.skill_set.names[self.index]]['FOR'] - self.cible.defense
+        print(self.damage)
+        return self.damage
 
 
 
@@ -200,12 +204,9 @@ class logique_de_combat:
         self.name = self.skill_set.names[self.index]
         ## check si activable
 
-        self.damage = self.striker.force*2 + self.skill_set.stat[self.skill_set.names[self.index]]['FOR'] - self.cible.defense
-        self.cible.lp -= max(0,self.damage)
-        print(self.cible.lp)
-
-        if self.name == "Frappe verticale":
-            self.knockback()
+        self.cible.lp -= max(0,self.calcul_dommage())
+        #print(self.cible.lp)
+        self.knockback()
 
         ## On vérifie si on a la portée
 

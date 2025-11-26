@@ -7,7 +7,7 @@ from ..acteur import Acteur
 
  
 class Joueur(Acteur):
-    def __init__(self,x=720,y=0,lp = 30000,force = 0,defense = 0,vit = 0,PtA = 0,etat = "cooldown",valeur = 1):
+    def __init__(self,x=720,y=0,lp = 30000,force = 10,defense = 0,vit = 0,PtA = 0,etat = "cooldown",valeur = 1):
         super(Joueur,self).__init__(x,y,lp,force,defense,vit,PtA,etat,valeur)
         self.experience = 0 
         self.curseur = pygame.Rect((self.x,self.y),(taillecase,taillecase))
