@@ -20,6 +20,8 @@ class control_joueur:
 
 
     def input_menu(self,event,index,options):
+        if index > len(options):
+            index = 0
 
 
         if event.type == pygame.KEYDOWN:
@@ -39,13 +41,7 @@ class control_joueur:
     def pointage_map(self):
         pass
         
-
-    
-
-
         
-
-
 
 
 
@@ -176,6 +172,7 @@ class logique_de_combat:
             self.cible.case_y = int(self.cible.rect.y // taillecase)
         # Exemple : attribut générique grid_pos = (x,y)
         elif hasattr(self.cible, "grid_pos"):
+            print(hasattr(self.cible, "grid_pos"))
             gx = int((self.cible.rect.x - 720) // taillecase)
             gy = int(self.cible.rect.y // taillecase)
             self.cible.grid_pos = (gx, gy)

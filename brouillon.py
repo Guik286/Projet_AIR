@@ -1,52 +1,38 @@
-import pygame
-from states.base import BaseState
-from states.acteurs.acteur import Acteur
-from states.acteurs.Joueur.joueur import Joueur
-from states.acteurs.ennemi import Ennemi
-from GI import GraphicInterface
-
-import random as rd
 
 
-from settings import taillecase
-
-
-class Matrice_Bagarre:
+class toto:
+    def __init__(self,x,y,name):
+        self.x = x
+        self.y = y
+        self.name = name
+    
+class arene:
     def __init__(self):
-
-        #On creer un échiquier (matrice pleine de zero)
-
-        self.echiquier = [[0 for i in range(0,18)] for j in range(0,20)]
-
-        ## 1 : joueur , 2 : ennemi
-
-        ## Test placement aléatoire acteurs
-        self.player = Joueur(rd.randint(0,5),rd.randint(0,5))
-        self.ennemi = Ennemi(rd.randint(15,19),rd.randint(14,17))
-        self.ennemi2 = Ennemi(rd.randint(15,19),rd.randint(14,17))
-        print(self.ennemi.x,self.ennemi.y,self.ennemi2.x,self.ennemi2.y)
-        self.Acteurs = {"Nom dictionnaire" : "Acteurs" , "Joueurs" :[self.player] , "Ennemis" : [self.ennemi,self.ennemi2] }
-        self.ref = Acteur(0,0)
+        self.tab = [[None] * 3  for i in range(3)]
 
 
-        self.echiquier[self.player.x][self.player.y] = self.player.valeur
-        for Ennemis in self.Acteurs["Ennemis"]:
-            print(Ennemis)
-            self.echiquier[Ennemis.x][Ennemis.y] = Ennemis.valeur
-            
-        print(self.echiquier)
+    def print_arene(self):
+        for row in self.tab:
+            print("-------------------------")
+            a = ""
+            for col in row:
+                
+                a += "|"
+                if col :
+                    a += col.name
+                    
+                else:
+                    a += "00"
+            print(a + "|")
 
 
-
-    def Deplacement(self,acteur,xcible,ycible):
-        #position initiale de l'acteur : 
-        xact, yact = acteur.x, acteur.y
-        self.echiquier[xact,yact] = 0
-        self.echiquier[xcible,ycible] = acteur.valeur
-            
+toto1 = toto(1,1,"t1")
+toto2 = toto(2,2,"t2")
 
 
+arena = arene()
+arena.tab[1][1] = toto1
+arena.tab[2][2] = toto2
+arena.print_arene()
 
 
-Matrice_Bagarre()
-Matrice_Bagarre().Deplacement(Joueur,18,20)

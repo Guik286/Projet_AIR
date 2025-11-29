@@ -60,16 +60,16 @@ class Ennemi(Acteur):
     def deplacement_ennemi(self,cible):
         self.Calcul_PA()
 
+
         if self.PA >= self.cout_deplacement:
-            if self.rect.x < cible.rect.x:
-                self.rect.x += taillecase * self.PA//self.cout_deplacement
-            elif self.rect.x > cible.rect.x:
-                self.rect.x -= taillecase * self.PA//self.cout_deplacement
-            if self.rect.y < cible.rect.y:
-                self.rect.y += taillecase * self.PA//self.cout_deplacement
-            elif self.rect.y > cible.rect.y:
-                self.rect.y -= taillecase * self.PA//self.cout_deplacement
-            self.rect_img.x, self.rect_img.y = self.rect.x, self.rect.y
+            if self.x < cible.x:
+                self.x +=1
+            elif self.x > cible.x:
+                self.x -= 1
+            if self.y < cible.y:
+                self.y += 1
+            elif self.y > cible.y:
+                self.y -= 1
             
     
     

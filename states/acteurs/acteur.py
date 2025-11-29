@@ -20,6 +20,13 @@ class Acteur:
         self.valeur = valeur
 
 
+        ### Coordonnées sur la matrice ####
+
+        
+
+        self.grid_pos = (self.x,self.y)
+
+
 
 
 
@@ -31,8 +38,7 @@ class Acteur:
 
 
         ## Cercle d'occupation de l'espace
-        self.radius_pos = 60
-        self.ensemble_position = []
+
         
         self.wait = False
         self.cout_deplacement = 300  ## cout en PA par case de deplacement
@@ -42,26 +48,23 @@ class Acteur:
 
 
         ## Position sur l'échiquier
-        self.rect = pygame.Rect((x,y),(taillecase,taillecase))
+        self.rect = pygame.Rect((720 + x * taillecase,y * taillecase),(taillecase,taillecase))
         ## Position sur l'ATB
         
         self.rect_indicateur = pygame.Rect((1920/3-50,1080),(50,10))
     
+############# Etat #####################################
 
-    def position_occupee(self,surface):
-        self.position_acteur = pygame.draw.circle(surface,pygame.Color("white"),self.rect.center,self.radius_pos)
-        self.ensemble_position.append(self.position_acteur)
-
-
-    def la_place_est_prise(self):
-        pass
 
     def mort(self):
         if self.lp <=0 :
             self.lp = 0
             self.etat = "mort"
 
- 
+
+
+
+################ Temporel #####################################
 
     def calcul_temps_ref(self,dt):
         if not self.Stop_Time_Active:
@@ -77,6 +80,12 @@ class Acteur:
 
     def deplacement(self):
         pass
+
+
+
+
+################ Spatial ############################## 
+
 
 
 

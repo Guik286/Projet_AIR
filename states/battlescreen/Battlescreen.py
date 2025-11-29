@@ -29,25 +29,18 @@ class Level(BaseState):
         self.BL = logique_de_combat
         
 
-
-        ### Test : Matrice case
-
-
-        
-
         ### Parametres de temps
 
         self.time_anim = 0
 
 
         
-        
-        ## Index de selection des options
-        self.range_options = len(Option_BS)-1
-        
         self.active_index = 0
+
+        self.grid = [[None] * ncol for j in range(nrow) ]
+
         
-        self.Index_cible = 0
+        
 
         
         ## commande menu activées, désactivées
@@ -57,13 +50,20 @@ class Level(BaseState):
         ## Les sprites
 
         #self.player = Joueur(720+taillecase*self.x,taillecase*self.y)
-        self.player = self.matrice.player
+        #720+ taillecase *rd.randint(0,5),taillecase *rd.randint(0,5)
+        self.player = Joueur(1,1)
+        self.ennemi = Ennemi(rd.randint(15,nrow-1),rd.randint(14,ncol-1))
         self.control = control_joueur(self.player)
-        self.ennemi = self.matrice.ennemi
-        self.ennemi2 = Ennemi(720+ taillecase * rd.randint(15,20),taillecase * rd.randint(14,18))
+
+        self.ennemi2 = Ennemi(rd.randint(15,nrow-1),rd.randint(14,ncol-1))
 
         self.ref = Acteur(0,0)
-        self.Entites = [self.ennemi,self.ennemi2]
+        self.Ennemis = [self.ennemi,self.ennemi2]
+        for ennemi in self.Ennemis:
+            print(ennemi.x,ennemi.y)
+            
+        
+        self.Index_cible = 0
 
         self.couleur_E = [pygame.Color("purple"),pygame.Color("cyan"),pygame.Color("darkred")]
         
@@ -76,13 +76,38 @@ class Level(BaseState):
 
         ## Image 
         self.font_dmg = pygame.font.SysFont("Arial",50)
-
-
-
+        self.position_grille()
+        self.grid_to_arena()
+        
+        
 
     
 
+    def position_grille(self):
+        self.grid[self.player.x][self.player.y] = self.player
         
+        for ennemi in self.Ennemis:
+            self.grid[ennemi.x][ennemi.y] = ennemi
+        print(ennemi.x)
+                # self.grid[i][j] = Objet_BS[self.grid[i][j]]
+    
+    def grid_to_arena(self):
+        index = 0
+        for i in range(0,nrow,1):
+            for j in range(0,ncol,1):
+
+                if self.grid[i][j] == "Joueur":
+                    self.player.x, self.player.y = i,j 
+                elif self.grid[i][j] == "Ennemi":
+                    self.Ennemis[index].x,self.Ennemis[index].y = i,j
+                    index += 1
+                else:
+                    pass
+        print(self.player.x)
+
+            
+
+    
 
 #### Conditions de sortie vers Fin
     def Defaite(self):
@@ -97,11 +122,13 @@ class Level(BaseState):
 #### fin adversaire
 
     def Ennemi_out(self):
-        for i in range(0,len(self.Entites),1):
+        for i in range(0,len(self.Ennemis),1):
 
-            if self.Entites[i].lp <= 0:
-                self.Entites[i].mort()
-                self.Entites.pop(i)
+            if self.Ennemis[i].lp <= 0:
+                self.Ennemis[i].mort()
+                self.Ennemis.pop(i)
+                self.couleur_E.pop(i+1)
+                
                 break
 
 ### Conditions de sortie vers suite
@@ -109,7 +136,7 @@ class Level(BaseState):
 
     def Victoire(self):
 
-            if self.Entites == []:
+            if self.Ennemis == []:
                 self.next_state = "Victoire"
                 self.done = True
                 self.player.experience += 1
@@ -129,23 +156,23 @@ class Level(BaseState):
         self.player.calcul_temps_acteur(self.ref.dureetour,dt)
 
         # Horloge adversaires
-        for i in range(0,len(self.Entites),1):
-            self.Entites[i].calcul_temps_acteur(self.ref.dureetour,dt)
+        for i in range(0,len(self.Ennemis),1):
+            self.Ennemis[i].calcul_temps_acteur(self.ref.dureetour,dt)
 
 
         ### déclenche IA adversaires f(horloge)
-        for i in range(0,len(self.Entites),1):
+        for i in range(0,len(self.Ennemis),1):
 
             limite = rd.randint(3,5)
 
-            if self.Entites[i].etat == "jouable":
+            if self.Ennemis[i].etat == "jouable":
                 
-                if self.Entites[i].chrono_action <= limite:
-                    self.Entites[i].Calcul_PA()
+                if self.Ennemis[i].chrono_action <= limite:
+                    self.Ennemis[i].Calcul_PA()
                     
                 else:
-                    self.Entites[i].IA_ennemi(self.player)
-            self.Entites[i].ordonnee_indicateur()
+                    self.Ennemis[i].IA_ennemi(self.player)
+            self.Ennemis[i].ordonnee_indicateur()
 
         ### Sortie vers Fin
         self.Fin_Joueur()
@@ -182,7 +209,7 @@ class Level(BaseState):
 
 #### Affiche les dommages 
     def display_dmg(self,dommage):
-        self.phrase_dmg = self.font_dmg.render(f"{dommage}",True,(0,255,255))
+        self.phrase_dmg = self.font_dmg.render(f"{dommage}",True,(0,0,0))
         return self.phrase_dmg
     
 ###### Selection de l'ennemi 
@@ -226,24 +253,24 @@ class Level(BaseState):
         
         ### Affichage des adversaires
 
-        if self.Entites != []:
-            for i in range(0,len(self.Entites),1):
-                pygame.draw.rect(surface,self.couleur_E[(i+1)],self.Entites[i].rect_indicateur)
-                pygame.draw.rect(surface,self.couleur_E[(i+1)],self.Entites[i].rect)
-                self.Entites[i].position_occupee(surface)
-                #if self.Entites[i].hit == True:
-                #    surface.blit(self.Entites[i].image,self.Entites[i].rect_hit)
+        if self.Ennemis != []:
+            for i in range(0,len(self.Ennemis),1):
+                pygame.draw.rect(surface,self.couleur_E[(i+1)],self.Ennemis[i].rect_indicateur)
+                pygame.draw.rect(surface,self.couleur_E[(i+1)],self.Ennemis[i].rect)
+
+                #if self.Ennemis[i].hit == True:
+                #    surface.blit(self.Ennemis[i].image,self.Ennemis[i].rect_hit)
                 #else:
-                #    surface.blit(self.Entites[i].image,self.Entites[i].rect_img)
+                #    surface.blit(self.Ennemis[i].image,self.Ennemis[i].rect_img)
                 #
             #
-                if self.Entites[i].hit == True:
-                    if pygame.time.get_ticks() - self.starttime <= 250:
-                        surface.blit(self.display_dmg(self.BL(self.player,self.Entites[i],self.player.Attaque_index).calcul_dommage()),(self.Entites[i].rect.center)+(0,1000))
+                if self.Ennemis[i].hit == True:
+                    if pygame.time.get_ticks() - self.starttime <= 200:
+                        surface.blit(self.display_dmg(self.BL(self.player,self.Ennemis[i],self.player.Attaque_index).calcul_dommage()),(self.Ennemis[i].rect.center)+(300,300))
                     else:
-                        surface.blit(self.display_dmg(self.BL(self.player,self.Entites[i],self.player.Attaque_index).calcul_dommage()),(self.Entites[i].rect.center))
-                    if pygame.time.get_ticks() - self.starttime >= 500:
-                        self.Entites[i].hit = False
+                        surface.blit(self.display_dmg(self.BL(self.player,self.Ennemis[i],self.player.Attaque_index).calcul_dommage()),(self.Ennemis[i].rect.center))
+                    if pygame.time.get_ticks() - self.starttime >= 300:
+                        self.Ennemis[i].hit = False
 #
 
         #### Affichage du/des joueurs
@@ -263,8 +290,8 @@ class Level(BaseState):
 
             GraphicInterface(self.texte_attaque,self.player.Attaque_index,Objet_attaque).draw(surface)
         if self.player.etat_jeu == "cible":
-            for index, ennemi in enumerate(self.Entites):
-                pygame.draw.rect(surface,self.selection_ennemi(self.Index_cible),self.Entites[self.Index_cible].rect,3)
+            for index, ennemi in enumerate(self.Ennemis):
+                pygame.draw.rect(surface,self.selection_ennemi(self.Index_cible),self.Ennemis[self.Index_cible].rect,3)
 
 
         ### Affichage des options du menu
@@ -308,16 +335,16 @@ class Level(BaseState):
                 self.quit = True
 
             elif event.key == pygame.K_RETURN:
-                skill = self.player.Attaque
+                
                 #print(skill)
                 #print(skill.names[self.player.Attaque_index])
                 
-                self.control.logique_valider(event,self.player,self.Entites[self.Index_cible],cout_total,self.active_index,self.Entites,self.player.Attaque_index)
+                self.control.logique_valider(event,self.player,self.Ennemis[self.Index_cible],cout_total,self.active_index,self.Ennemis,self.player.Attaque_index)
                 self.starttime = pygame.time.get_ticks()
                 
         ## On repart en arriere
             elif event.key == pygame.K_BACKSPACE:
-                self.control.logique_echap(self.player,self.Entites)
+                self.control.logique_echap(self.player,self.Ennemis)
 
             elif event.key in [pygame.K_UP,pygame.K_DOWN]:
                 if self.player.etat_jeu == "menu":
@@ -328,7 +355,7 @@ class Level(BaseState):
                     self.player.Attaque_index = self.control.input_menu(event,self.player.Attaque_index,self.texte_attaque)
                 elif self.player.etat_jeu == "cible":
 
-                    self.Index_cible = self.control.input_menu(event,self.Index_cible,self.Entites)
+                    self.Index_cible = self.control.input_menu(event,self.Index_cible,self.Ennemis)
         elif event.type == pygame.MOUSEBUTTONDOWN:
             if self.player.etat_jeu == "map":
                 ## Position logique
@@ -343,8 +370,8 @@ class Level(BaseState):
                 self.player.etat = "cooldown"
                 self.player.etat_jeu = "menu"
                 self.player.wait = False
-                for i in range(0,len(self.Entites),1):
-                    self.Entites[i].wait = False
+                for i in range(0,len(self.Ennemis),1):
+                    self.Ennemis[i].wait = False
 
 
 
