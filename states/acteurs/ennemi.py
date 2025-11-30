@@ -70,6 +70,8 @@ class Ennemi(Acteur):
                 self.y += 1
             elif self.y > cible.y:
                 self.y -= 1
+            self.rect.x,self.rect.y = 720 + self.x * taillecase,self.y * taillecase
+            self.PA -= self.cout_deplacement
             
     
     
