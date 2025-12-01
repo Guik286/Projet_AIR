@@ -48,6 +48,7 @@ class Acteur:
 
 
         ## Position sur l'échiquier
+
         self.rect = pygame.Rect((720 + x * taillecase,y * taillecase),(taillecase,taillecase))
         ## Position sur l'ATB
         
@@ -60,6 +61,24 @@ class Acteur:
         if self.lp <=0 :
             self.lp = 0
             self.etat = "mort"
+
+    def get_striked(self,striker,skill):
+        if not self.hit:
+            pass
+        else:
+            ## animation du hit
+            ## application des dégats
+            ## application du knockback
+            if not skill["KB"] >0:
+                pass
+            else:
+                origin = striker.rect.center
+                power = skill["KB"]
+                self.knockback(origin,power)
+
+            ## application des effets secondaires
+
+            self.hit = False
 
 
 
@@ -100,5 +119,56 @@ class Acteur:
             action = "Lancer l'action"
             
         return action
+    
+    def knockback(self,origin,power):
+        print(self.x,self.y)
+
+        # Position de l'attaquant
+        pos_attaquant = pygame.math.Vector2(origin)
+        # Position de la cible
+        pos_cible = pygame.math.Vector2(self.rect.center)
+
+
+        # Calcul du vecteur de knockback (direction de la poussée)
+        direction = pos_cible - pos_attaquant
+
+
+        if direction.length() != 0:  # Évite la division par zéro
+            direction = direction.normalize()
+
+        knockback_distance = power 
+
+        nouvelle_pos = self.grid_pos + direction * knockback_distance
+            
+        # Appliquer le déplacement visuel
+        self.x = int(nouvelle_pos.x)
+        self.y = int(nouvelle_pos.y)
+        print(self.x,self.y)
+
+        ## Synchronisation avec le visuel 
+        self.rect.topleft = (720 + taillecase *self.x,taillecase *self.y)
+
+
+        ## --- Synchroniser la position logique (si présente) ---
+        ## Exemple : si l'acteur garde des coordonnées de case (case_x, case_y)
+        #if hasattr(self.cible, "case_x") and hasattr(self.cible, "case_y"):
+        #    # convertir pixels -> indices de case (ajuster offset / taille si différent)
+        #    self.cible.case_x = int((self.cible.rect.x - 720) // taillecase)
+        #    self.cible.case_y = int(self.cible.rect.y // taillecase)
+        ## Exemple : attribut générique grid_pos = (x,y)
+        #elif hasattr(self.cible, "grid_pos"):
+        #    print(hasattr(self.cible, "grid_pos"))
+        #    gx = int((self.cible.rect.x - 720) // taillecase)
+        #    gy = int(self.cible.rect.y // taillecase)
+        #    self.cible.grid_pos = (gx, gy)
+        #    print(gx,gy)
+        ## Sinon, stocker la nouvelle position comme position source pour éviter override
+        #else:
+        #    self.cible.base_pos = (self.cible.rect.x, self.cible.rect.y)
+
+
+
+
+
     
 

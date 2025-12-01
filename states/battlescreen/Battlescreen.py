@@ -88,7 +88,6 @@ class Level(BaseState):
         
         for ennemi in self.Ennemis:
             self.grid[ennemi.x][ennemi.y] = ennemi
-        print(ennemi.x)
                 # self.grid[i][j] = Objet_BS[self.grid[i][j]]
     
     def grid_to_arena(self):
@@ -103,7 +102,6 @@ class Level(BaseState):
                     index += 1
                 else:
                     pass
-        print(self.player.x)
 
             
 
@@ -336,8 +334,6 @@ class Level(BaseState):
 
             elif event.key == pygame.K_RETURN:
                 
-                #print(skill)
-                #print(skill.names[self.player.Attaque_index])
                 
                 self.control.logique_valider(event,self.player,self.Ennemis[self.Index_cible],cout_total,self.active_index,self.Ennemis,self.player.Attaque_index)
                 self.starttime = pygame.time.get_ticks()
@@ -359,8 +355,13 @@ class Level(BaseState):
         elif event.type == pygame.MOUSEBUTTONDOWN:
             if self.player.etat_jeu == "map":
                 ## Position logique
-                pos_J = pygame.math.Vector2(self.player.rect.center)
+                ## On récupère la position du clic de la souris
                 pos = pygame.math.Vector2(pygame.mouse.get_pos())
+
+                
+
+                pos_J = pygame.math.Vector2(self.player.rect.center)
+                
                 self.player.x,self.player.y = pos
                 print(self.player.x,self.player.y)
                 movement = pos - pos_J

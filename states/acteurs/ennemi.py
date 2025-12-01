@@ -72,6 +72,7 @@ class Ennemi(Acteur):
                 self.y -= 1
             self.rect.x,self.rect.y = 720 + self.x * taillecase,self.y * taillecase
             self.PA -= self.cout_deplacement
+            print(f"L'ennemi se déplace en ({self.x},{self.y})")
             
     
     
@@ -82,7 +83,7 @@ class Ennemi(Acteur):
         if self.PA >= 500:
             damage = max(0, self.force - cible.defense)
             cible.lp -= damage
-            #print(f"L'ennemi attaque et inflige {damage} points de dégâts !")
+            print(f"L'ennemi attaque et inflige {damage} points de dégâts !")
             #print(f"{cible} a pris 1 point de dégats")
             #print(f"{cible} a {cible.lp}")
 

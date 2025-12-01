@@ -142,56 +142,56 @@ class logique_de_combat:
         else:
             self.flag_PA = False
 
-    def knockback(self):
-
-        # Position de l'attaquant
-        pos_attaquant = pygame.math.Vector2(self.striker.rect.center)
-        # Position de la cible
-        pos_cible = pygame.math.Vector2(self.cible.rect.center)
-
-        # Calcul du vecteur de knockback (direction de la poussée)
-        direction = pos_cible - pos_attaquant
-
-
-        if direction.length() != 0:  # Évite la division par zéro
-            direction = direction.normalize()
-
-        knockback_distance = self.skill_set.stat[self.skill_set.names[self.index]]['KB']*60
-        nouvelle_pos = pos_cible + direction * knockback_distance
-            
-        # Appliquer le déplacement visuel
-        self.cible.rect.centerx = int(nouvelle_pos.x)
-        self.cible.rect.centery = int(nouvelle_pos.y)
-
-
-        # --- Synchroniser la position logique (si présente) ---
-        # Exemple : si l'acteur garde des coordonnées de case (case_x, case_y)
-        if hasattr(self.cible, "case_x") and hasattr(self.cible, "case_y"):
-            # convertir pixels -> indices de case (ajuster offset / taille si différent)
-            self.cible.case_x = int((self.cible.rect.x - 720) // taillecase)
-            self.cible.case_y = int(self.cible.rect.y // taillecase)
-        # Exemple : attribut générique grid_pos = (x,y)
-        elif hasattr(self.cible, "grid_pos"):
-            print(hasattr(self.cible, "grid_pos"))
-            gx = int((self.cible.rect.x - 720) // taillecase)
-            gy = int(self.cible.rect.y // taillecase)
-            self.cible.grid_pos = (gx, gy)
-        # Sinon, stocker la nouvelle position comme position source pour éviter override
-        else:
-            self.cible.base_pos = (self.cible.rect.x, self.cible.rect.y)
-
-
-
-
-            # Animation optionnelle de recul (à implémenter si souhaité)
-        self.cible.hit = True  # Flag pour indiquer que l'acteur a été touchés
-            #def flash_on_hit(self,acteur):
-            #    if acteur.hit == True:
+    #def knockback(self):
+#
+    #    # Position de l'attaquant
+    #    pos_attaquant = pygame.math.Vector2(self.striker.rect.center)
+    #    # Position de la cible
+    #    pos_cible = pygame.math.Vector2(self.cible.rect.center)
+#
+    #    # Calcul du vecteur de knockback (direction de la poussée)
+    #    direction = pos_cible - pos_attaquant
+#
+#
+    #    if direction.length() != 0:  # Évite la division par zéro
+    #        direction = direction.normalize()
+#
+    #    knockback_distance = self.skill_set.stat[self.skill_set.names[self.index]]['KB']*60
+    #    nouvelle_pos = pos_cible + direction * knockback_distance
+    #        
+    #    # Appliquer le déplacement visuel
+    #    self.cible.rect.centerx = int(nouvelle_pos.x)
+    #    self.cible.rect.centery = int(nouvelle_pos.y)
+#
+#
+    #    # --- Synchroniser la position logique (si présente) ---
+    #    # Exemple : si l'acteur garde des coordonnées de case (case_x, case_y)
+    #    if hasattr(self.cible, "case_x") and hasattr(self.cible, "case_y"):
+    #        # convertir pixels -> indices de case (ajuster offset / taille si différent)
+    #        self.cible.case_x = int((self.cible.rect.x - 720) // taillecase)
+    #        self.cible.case_y = int(self.cible.rect.y // taillecase)
+    #    # Exemple : attribut générique grid_pos = (x,y)
+    #    elif hasattr(self.cible, "grid_pos"):
+    #        print(hasattr(self.cible, "grid_pos"))
+    #        gx = int((self.cible.rect.x - 720) // taillecase)
+    #        gy = int(self.cible.rect.y // taillecase)
+    #        self.cible.grid_pos = (gx, gy)
+    #        print(gx,gy)
+    #    # Sinon, stocker la nouvelle position comme position source pour éviter override
+    #    else:
+    #        self.cible.base_pos = (self.cible.rect.x, self.cible.rect.y)
+#
+#
+#
+#
+    #        # Animation optionnelle de recul (à implémenter si souhaité)
+    #    self.cible.hit = True  # Flag pour indiquer que l'acteur a été touchés
+    #        #def flash_on_hit(self,acteur):
+    #        #    if acteur.hit == True:
        
 
     def calcul_dommage(self):
         self.damage = self.striker.force*2 + self.skill_set.stat[self.skill_set.names[self.index]]['FOR'] - self.cible.defense
-        print(self.damage)
         return self.damage
 
 
@@ -202,8 +202,8 @@ class logique_de_combat:
         ## check si activable
 
         self.cible.lp -= max(0,self.calcul_dommage())
-        #print(self.cible.lp)
-        self.knockback()
+        self.cible.hit = True
+        self.cible.get_striked(self.striker,self.skill_set.stat[self.skill_set.names[self.index]])
 
         ## On vérifie si on a la portée
 
