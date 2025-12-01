@@ -1,5 +1,5 @@
 import pygame
-from settings import *
+from Data.settings import *
 from .Attaque_joueur import *
 from ..acteur import Acteur
 
@@ -22,7 +22,7 @@ class Joueur(Acteur):
         #
 
         self.Attaque_index = 0
-        self.Attaque = Attaque_joueur("states/data/Skill.json")
+        self.Attaque = Attaque_joueur()
         self.signal_act = False
 
         ## Valeur dans la matrice 

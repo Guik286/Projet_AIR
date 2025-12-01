@@ -1,6 +1,6 @@
 import pygame
 from settings import *
-from states.acteurs.acteur import Acteur
+from Game_f.states.acteurs.acteur import Acteur
 import random as rd
 
 class control_joueur:

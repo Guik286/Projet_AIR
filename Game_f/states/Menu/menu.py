@@ -1,6 +1,6 @@
 import pygame
 from GI import GraphicInterface
-from states.base import BaseState
+from Game_f.states.base import BaseState
 
 
 

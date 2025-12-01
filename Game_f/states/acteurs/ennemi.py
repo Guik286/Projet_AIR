@@ -1,5 +1,5 @@
-#import pygame
-from settings import * 
+import pygame
+from Data.settings import * 
 from .acteur import Acteur
 import random as rd
 
@@ -14,10 +14,10 @@ class Ennemi(Acteur):
         self.dureetour = 5
         # etat du joueur dans le gameplay
         self.rect_indicateur = pygame.Rect((1920/3-50,1080),(50,10))
-        self.image = pygame.image.load('states/graphics/character/panther.png')
+        self.image = pygame.image.load('Data/graphics/character/panther.png')
         self.rect_img = self.image.get_rect()
         self.rect_img.center = self.rect.center
-        self.image_hit = pygame.image.load('states/graphics/character/panther_hit.png')
+        self.image_hit = pygame.image.load('Data/graphics/character/panther_hit.png')
         self.rect_hit = self.image_hit.get_rect()
         self.rect_hit.center = self.rect.center
 

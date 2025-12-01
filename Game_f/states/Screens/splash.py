@@ -1,5 +1,5 @@
 import pygame
-from states.base import BaseState
+from Game_f.states.base import BaseState
 
 
 class Splash(BaseState):
@@ -7,10 +7,10 @@ class Splash(BaseState):
         super(Splash, self).__init__()
         self.next_state = "MENU"
         self.time_active = 0
-        self.largeText = pygame.font.Font('states/font/lycheesoda.ttf',200)
+        self.largeText = pygame.font.Font('Data/font/lycheesoda.ttf',200)
         self.Surf_Text, self.Rect_Text = self.text_object("Chapitre 1", self.largeText)
         self.Rect_Text.center = (960,150)
-        self.loaded_image = pygame.image.load('states/graphics/BackgroundTitle/AIR_Background.png')
+        self.loaded_image = pygame.image.load('Data/graphics/BackgroundTitle/AIR_Background.png')
         
         
     def text_object(self,text,font):

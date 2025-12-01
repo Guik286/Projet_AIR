@@ -1,5 +1,5 @@
 import pygame
-from settings import *
+from Data.settings import SCREENWIDTH, SCREENHEIGHT, lenATB, widATB
 
 
 

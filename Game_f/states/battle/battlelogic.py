@@ -1,14 +1,15 @@
 import pygame
-from states.base import BaseState
-from states.acteurs.acteur import Acteur
-from states.acteurs.Joueur.joueur import Joueur
-from states.acteurs.ennemi import Ennemi
+
+from Game_f.states.base import BaseState
+from Game_f.states.acteurs.acteur import Acteur
+from Game_f.states.acteurs.Joueur.joueur import Joueur
+from Game_f.states.acteurs.ennemi import Ennemi
 from GI import GraphicInterface
 
 import random as rd
 
 
-from settings import taillecase
+from Data.settings import taillecase
 
 
 class Matrice_Bagarre:

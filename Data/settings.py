@@ -35,7 +35,7 @@ Batt_Area = pygame.Rect((0,0),(5*SCREENWIDTH/8,SCREENHEIGHT))
 Batt_Area.bottomright = (SCREENWIDTH,SCREENHEIGHT)
 
 ## Background arene
-image_arene = pygame.image.load('states/graphics/BackgroundTitle/BGArene.png')
+image_arene = pygame.image.load('Data/graphics/BackgroundTitle/BGArene.png')
 width = image_arene.get_width()
 height = image_arene.get_height()
 Image_A = pygame.transform.scale(image_arene,(1200,1080))

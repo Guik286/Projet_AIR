@@ -40,7 +40,7 @@ class Attaque_joueur:
     #Sprite =
     # attack_name,attack_PA,attack_for,attack_effet,attack_cast,attack_CD,Portee,
     
-    def __init__(self,stat_file = "states/data/Skill.json",index = 0):
+    def __init__(self,stat_file = "Data/statistique/Skill.json",index = 0):
         self.statistique = stat_file
         self.index = index
         

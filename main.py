@@ -1,13 +1,21 @@
 import pygame, sys
-from states.Menu.menu import Menu
-from states.Menu.game_over import GameOver
-from states.Menu.splash import Splash
-from states.Menu.options import Options
-from Game import Game
-from states.battlescreen.Battlescreen import Level
-from states.battlescreen.Screen_Victoire import Ecran_Victoire
 
-from states.battlescreen.ATB import *
+#### Classe de gestion des screens
+from Game_f.Game import Game
+### Menus et options
+from Game_f.states.Menu.menu import Menu
+from Game_f.states.Menu.options import Options
+
+### Ecrans de jeu
+
+from Game_f.states.Screens.splash import Splash
+from Game_f.states.battle.Battlescreen import Level
+from Game_f.states.Screens.Screen_Victoire import Ecran_Victoire
+from Game_f.states.Screens.game_over import GameOver
+
+### Config
+
+from Data.settings import *
 
 pygame.init()
 

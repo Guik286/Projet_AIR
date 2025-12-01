@@ -1,5 +1,5 @@
 import pygame
-from states.base import BaseState
+from Game_f.states.base import BaseState
 from GI import GraphicInterface
 
 class Options(BaseState):
@@ -9,7 +9,7 @@ class Options(BaseState):
         self.choix = ["Retour au Menu" , "Volume :" ]
         self.Vol_Bar = pygame.Rect(300,500,500,40)
 
-        self.Music_Test = pygame.mixer.Sound('states/audio/gnosiaop.mp3')
+        self.Music_Test = pygame.mixer.Sound('Data/audio/gnosiaop.mp3')
         self.Music_Test.set_volume(0)
         self.Music_Test.play(loops = -1)
 
