@@ -102,6 +102,7 @@ class Level(BaseState):
                     index += 1
                 else:
                     pass
+        
 
             
 
@@ -229,7 +230,7 @@ class Level(BaseState):
         surface.fill(pygame.Color('black'))
 
         ## Arene 
-        #surface.blit(Image_A,(720,0))
+        surface.blit(Image_A,(720,0))
 
         pygame.draw.rect(surface,pygame.Color("white"), Batt_Area)
         ### Menu joueur
@@ -256,11 +257,11 @@ class Level(BaseState):
                 pygame.draw.rect(surface,self.couleur_E[(i+1)],self.Ennemis[i].rect_indicateur)
                 pygame.draw.rect(surface,self.couleur_E[(i+1)],self.Ennemis[i].rect)
 
-                #if self.Ennemis[i].hit == True:
-                #    surface.blit(self.Ennemis[i].image,self.Ennemis[i].rect_hit)
-                #else:
-                #    surface.blit(self.Ennemis[i].image,self.Ennemis[i].rect_img)
-                #
+                if self.Ennemis[i].hit == True:
+                    surface.blit(self.Ennemis[i].image,self.Ennemis[i].rect_hit)
+                else:
+                    surface.blit(self.Ennemis[i].image,self.Ennemis[i].rect_img)
+                
             #
                 if self.Ennemis[i].hit == True:
                     if pygame.time.get_ticks() - self.starttime <= 200:
@@ -355,18 +356,38 @@ class Level(BaseState):
         elif event.type == pygame.MOUSEBUTTONDOWN:
             if self.player.etat_jeu == "map":
                 ## Position logique
+                ### Position du joueur
+                pos_i = self.player.x
+                pos_j = self.player.y
                 ## On récupère la position du clic de la souris
                 pos = pygame.math.Vector2(pygame.mouse.get_pos())
+                #detecter la case cliquée
+                col = int((pos.x - 720) // taillecase)
+                row = int(pos.y // taillecase)
+                print(row,col)
+                print(self.grid)
+                ## Quand il y'aura un algo de pathfinding, on l'appellera ici
+                ## On permute les valeurs dans la matrice
+                self.grid[pos_i][pos_j] = None
+                self.grid[row][col] = self.player
+                self.player.deplacement_acteur(col,row)
+                ## On met à jour les coordonnées du joueur  
+                
+                ## On déplace le sprite du joueur
+                
+                
 
                 
 
-                pos_J = pygame.math.Vector2(self.player.rect.center)
                 
-                self.player.x,self.player.y = pos
-                print(self.player.x,self.player.y)
-                movement = pos - pos_J
-                self.player.rect.move_ip(movement)
-                self.player
+
+                #pos_J = pygame.math.Vector2(self.player.rect.center)
+                #
+                #self.player.x,self.player.y = pos
+                #print(self.player.x,self.player.y)
+                #movement = pos - pos_J
+                #self.player.rect.move_ip(movement)
+                #self.player
                 self.player.chrono_action = 0
                 self.player.etat = "cooldown"
                 self.player.etat_jeu = "menu"

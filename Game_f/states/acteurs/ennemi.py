@@ -72,7 +72,8 @@ class Ennemi(Acteur):
                 self.y -= 1
             self.rect.x,self.rect.y = 720 + self.x * taillecase,self.y * taillecase
             self.PA -= self.cout_deplacement
-            print(f"L'ennemi se déplace en ({self.x},{self.y})")
+            #print(f"L'ennemi se déplace en ({self.x},{self.y})")
+            self.rect_img.center = self.rect.center
             
     
     

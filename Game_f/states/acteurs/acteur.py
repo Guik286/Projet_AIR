@@ -75,6 +75,7 @@ class Acteur:
                 origin = striker.rect.center
                 power = skill["KB"]
                 self.knockback(origin,power)
+                self.rect_img.center = self.rect.center
 
             ## application des effets secondaires
 
@@ -105,6 +106,11 @@ class Acteur:
 
 ################ Spatial ############################## 
 
+    def deplacement_acteur(self,new_x,new_y):
+        self.x = new_x
+        self.y = new_y
+        self.rect.topleft = (720 + taillecase *self.x,taillecase *self.y)
+
 
 
 
@@ -121,7 +127,6 @@ class Acteur:
         return action
     
     def knockback(self,origin,power):
-        print(self.x,self.y)
 
         # Position de l'attaquant
         pos_attaquant = pygame.math.Vector2(origin)
@@ -143,7 +148,6 @@ class Acteur:
         # Appliquer le déplacement visuel
         self.x = int(nouvelle_pos.x)
         self.y = int(nouvelle_pos.y)
-        print(self.x,self.y)
 
         ## Synchronisation avec le visuel 
         self.rect.topleft = (720 + taillecase *self.x,taillecase *self.y)
