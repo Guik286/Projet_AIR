@@ -36,7 +36,7 @@ class Level(BaseState):
         
         self.active_index = 0
 
-        self.grid = [[None] * ncol for j in range(nrow) ]
+        self.grid = [[None] * nrow for j in range(ncol) ]
 
         
         
@@ -51,10 +51,10 @@ class Level(BaseState):
         #self.player = Joueur(720+taillecase*self.x,taillecase*self.y)
         #720+ taillecase *rd.randint(0,5),taillecase *rd.randint(0,5)
         self.player = Joueur()
-        self.ennemi = Ennemi(rd.randint(15,nrow-1),rd.randint(14,ncol-1))
+        self.ennemi = Ennemi(19,17)
         self.control = control_joueur(self.player)
 
-        self.ennemi2 = Ennemi(rd.randint(15,nrow-1),rd.randint(14,ncol-1))
+        self.ennemi2 = Ennemi(0,16)
 
         self.ref = Acteur(0,0)
         self.Ennemis = [self.ennemi,self.ennemi2]
@@ -89,24 +89,15 @@ class Level(BaseState):
                 # self.grid[i][j] = Objet_BS[self.grid[i][j]]
 
     
-    def grid_to_arena(self):
-        index = 0
-        for i in range(0,nrow,1):
-            for j in range(0,ncol,1):
 
-                if self.grid[i][j] == "Joueur":
-                    self.player.x, self.player.y = i,j 
-                elif self.grid[i][j] == "Ennemi":
-                    self.Ennemis[index].x,self.Ennemis[index].y = i,j
-                    index += 1
-                else:
-                    pass
     def deplacer_grid(self,old_x,old_y,acteur):
         
         x_new,y_new = acteur.x,acteur.y
-        self.grid[x_new][y_new] = self.grid[old_x][old_y]
-        self.grid[old_x][old_y] = None
-        
+        if not old_x == x_new and not old_y == y_new:
+            self.grid[x_new][y_new] = self.grid[old_x][old_y]
+            self.grid[old_x][old_y] = None
+        else : 
+            pass
 
             
 
@@ -163,14 +154,14 @@ class Level(BaseState):
         for i in range(0,len(self.Ennemis),1):
             self.Ennemis[i].calcul_temps_acteur(self.ref.dureetour,dt)
 
-
+        
         ### déclenche IA adversaires f(horloge)
         for i in range(0,len(self.Ennemis),1):
-            limite = rd.randint(3,5)
 
             
 
             if self.Ennemis[i].etat == "jouable":
+                limite = rd.randint(1,10)
                 
                 
                 if self.Ennemis[i].chrono_action <= limite:
@@ -181,7 +172,15 @@ class Level(BaseState):
                     old_y = self.Ennemis[i].y
                     self.Ennemis[i].IA_ennemi(self.player,self.grid)
                     self.deplacer_grid(old_x,old_y,self.Ennemis[i])
-                    #print(self.grid)
+                    for k in range(0,nrow,1):
+    
+                        for j in range(0,ncol,1):
+                            if self.grid[j][k] is None:
+                                print("0",end=" ")
+                            else:
+                                print("X",end=" ")
+                        print("||")
+                    print(f"Ennemis {i}",self.Ennemis[i].x,self.Ennemis[i].y)
             self.Ennemis[i].ordonnee_indicateur()
 
         ### Sortie vers Fin
@@ -219,7 +218,7 @@ class Level(BaseState):
 
 #### Affiche les dommages 
     def display_dmg(self,dommage):
-        self.phrase_dmg = self.font_dmg.render(f"{dommage}",True,(0,0,0))
+        self.phrase_dmg = self.font_dmg.render(f"{dommage}",True,(255,255,0))
         return self.phrase_dmg
     
 ###### Selection de l'ennemi 
@@ -277,13 +276,12 @@ class Level(BaseState):
                     self.Ennemis[i].image_hit()
                 
             #
-                #if self.Ennemis[i].hit == True:
-                #    if pygame.time.get_ticks() - self.starttime <= 200:
-                #        surface.blit(self.display_dmg(self.BL(self.player,self.Ennemis[i],self.player.Attaque_index).calcul_dommage()),(self.Ennemis[i].rect.center)+(300,300))
-                #    else:
-                #        surface.blit(self.display_dmg(self.BL(self.player,self.Ennemis[i],self.player.Attaque_index).calcul_dommage()),(self.Ennemis[i].rect.center))
-                #    if pygame.time.get_ticks() - self.starttime >= 300:
-                #        self.Ennemis[i].hit = False
+                
+                if self.Ennemis[i].hit > 5:
+                    surface.blit(self.display_dmg(self.BL(self.player,self.Ennemis[i],self.player.Attaque_index).calcul_dommage()),(self.Ennemis[i].rect.center)+(500,500))
+                elif self.Ennemis[i].hit <=5 and self.Ennemis[i].hit >0:
+                    surface.blit(self.display_dmg(self.BL(self.player,self.Ennemis[i],self.player.Attaque_index).calcul_dommage()),(self.Ennemis[i].rect.center))
+
 #
 
         #### Affichage du/des joueurs
@@ -348,9 +346,20 @@ class Level(BaseState):
                 self.quit = True
 
             elif event.key == pygame.K_RETURN:
-                
+                ## Deplacer grid pour eventuel Knockback
+                ##Anciennes coordonnées
+                x = []
+                y = []
+
+                for i in range(0,len(self.Ennemis),1):
+                    x.append(self.Ennemis[i].x)
+                    y.append(self.Ennemis[i].y)
+
                 
                 self.control.logique_valider(event,self.player,self.Ennemis[self.Index_cible],cout_total,self.active_index,self.Ennemis,self.player.Attaque_index)
+                ## Application du deplacement dans la matrice
+                for i in range(0,len(self.Ennemis),1):
+                    self.deplacer_grid(x[i],y[i],self.Ennemis[i])
                 self.starttime = pygame.time.get_ticks()
                 
         ## On repart en arriere

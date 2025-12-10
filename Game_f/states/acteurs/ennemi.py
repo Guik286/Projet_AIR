@@ -89,7 +89,7 @@ class Ennemi(Acteur):
             else:
                 self.PA -= self.cout_deplacement
 
-            #print(f"L'ennemi se déplace en ({self.x},{self.y})")
+            print(f"L'ennemi se déplace en ({self.x},{self.y})")
             self.rect_img.center = self.rect.center
             
             
@@ -128,5 +128,6 @@ class Ennemi(Acteur):
     def flash_on_hit(self):
         if self.hit ==True:
             self.rect_img = self.image_hit
+            
 
         

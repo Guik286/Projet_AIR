@@ -72,7 +72,7 @@ class Acteur:
         if self.hit <1 :
             pass
         else:
-            self.hit = 10
+            self.hit = 15
             self.image_hit()
             ## animation du hit
             ## application des dégats
@@ -154,7 +154,7 @@ class Acteur:
 
         nouvelle_pos = self.grid_pos + direction * knockback_distance
             
-        # Appliquer le déplacement visuel
+        # Appliquer le déplacement logique
         self.x = int(nouvelle_pos.x)
         self.y = int(nouvelle_pos.y)
 
