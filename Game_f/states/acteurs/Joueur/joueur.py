@@ -7,8 +7,8 @@ from ..acteur import Acteur
 
  
 class Joueur(Acteur):
-    def __init__(self,x=720,y=0,lp = 30000,force = 0,defense = 0,vit = 0,PtA = 0,etat = "cooldown",valeur = 1):
-        super(Joueur,self).__init__(x,y,lp,force,defense,vit,PtA,etat,valeur)
+    def __init__(self,x=0,y=0,lp = 30000,force = 0,defense = 0,vit = 0,PtA = 0,etat = "cooldown"):
+        super(Joueur,self).__init__(x,y,lp,force,defense,vit,PtA,etat)
         self.experience = 0 
         self.curseur = pygame.Rect((self.x,self.y),(taillecase,taillecase))
         self.etat_jeu = "menu"
@@ -26,7 +26,7 @@ class Joueur(Acteur):
         self.signal_act = False
 
         ## Valeur dans la matrice 
-        self.valeur = 1
+
         
         
 
@@ -57,7 +57,7 @@ class Joueur(Acteur):
 
         self.rect_indicateur = pygame.Rect((1920/3-50,1080),(50,10))
 
-    def afficher_deplacement_possible(self,surface):
+    def afficher_deplacement_possible(self,surface,grid):
         PA = self.PA
         max_case = PA // self.cout_deplacement
         origine = (self.rect.x - 720)//taillecase , (self.rect.y)//taillecase
@@ -66,7 +66,7 @@ class Joueur(Acteur):
                 if abs(i) + abs(j) <= max_case:
                     x = origine[0] + i
                     y = origine[1] + j
-                    if 0 <= x < 20 and 0 <= y < 18:
+                    if 0 <= x < 20 and 0 <= y < 18 and grid[y][x] is None:
                         rect = pygame.Rect(720 + x * taillecase, y * taillecase, taillecase, taillecase)
                         pygame.draw.rect(surface, pygame.Color("gray"), rect, 3)
 

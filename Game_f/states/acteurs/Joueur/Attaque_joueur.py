@@ -12,24 +12,7 @@ import json
 class Attaque_joueur:
 
     
-    """A class to represent a single attack.
-    Attributes:
-        attack_name (str): The name of the attack.
-        attack_PA (str): A.P cost (int).
-        attack_for: STR (int).
-        attack_effet: changing stat effect (str).
-        attack_cast: casting time (s).
-        attack_CD : Cooldown time (s).
-        Portée : range(int).
-        sprite: dictionnary of animation.
-    Methods:
-        print(): Prints a string representation of the task.
-        get_index(): Returns the index of the task.
-        set_index(index): Sets the index of the task.
-        trigger(): Toggles the task status between completed and not completed.
-        print_console(length=50, metadata=False): Prints the task details in a formatted console output.
-        get_console(length, metadata=False): Returns a formatted array representation of the task for console output
-    """
+
     attaque_id = ""
     attack_PA = ""
     attack_for = ""
@@ -100,18 +83,5 @@ class Attaque_joueur:
         
         attack.attack_id = json_data['index']
         return attack
-
-
-
-#try :
-#
-#    with open(r"C:\Users\minar\Desktop\TestJeu\states\data\Skill.json",'r') as file:
-#        data = json.load(file)
-#        Attaque_joueur(data).print()
-#except FileNotFoundError:
-#    print("le fichier d'Attaque du joueur n'a pas été trouvé")
-
-
-
 
 

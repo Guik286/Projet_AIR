@@ -1,13 +1,13 @@
 import pygame
 from Data.settings import *
-import math
+from math import sqrt
 import random as rd
 
 
 
 class Acteur:
     def __init__(self,x,y,lp=10,force=0,defense=0,vit=0,PtA=0,etat="cooldown",valeur = 0):
-        self.lp = 10
+        self.lp = lp
         self.force = force
         self.defense = defense
         self.vit = vit
@@ -16,11 +16,10 @@ class Acteur:
         self.PA = PtA
         self.etat = etat
         self.etat_jeu = "menu"
-        self.hit = False
+        self.hit = 0
         self.valeur = valeur
 
-
-        ### Coordonnées sur la matrice ####
+      ### Coordonnées sur la matrice ####
 
         
 
@@ -41,7 +40,8 @@ class Acteur:
 
         
         self.wait = False
-        self.cout_deplacement = 300  ## cout en PA par case de deplacement
+        self.cout_deplacement = 300
+        self.cout_deplacement_diag = sqrt(2) * self.cout_deplacement  ## cout en PA par case de deplacement
         self.chrono_action = 0
         self.Stop_Time_Active = False
 
@@ -53,6 +53,12 @@ class Acteur:
         ## Position sur l'ATB
         
         self.rect_indicateur = pygame.Rect((1920/3-50,1080),(50,10))
+
+
+
+        #### Dictionnaires des animations ####
+        self.animations = {}
+        
     
 ############# Etat #####################################
 
@@ -63,9 +69,11 @@ class Acteur:
             self.etat = "mort"
 
     def get_striked(self,striker,skill):
-        if not self.hit:
+        if self.hit <1 :
             pass
         else:
+            self.hit = 10
+            self.image_hit()
             ## animation du hit
             ## application des dégats
             ## application du knockback
@@ -75,11 +83,12 @@ class Acteur:
                 origin = striker.rect.center
                 power = skill["KB"]
                 self.knockback(origin,power)
-                self.rect_img.center = self.rect.center
+            #    self.rect_img.center = self.rect.center
+
 
             ## application des effets secondaires
 
-            self.hit = False
+            
 
 
 
@@ -151,6 +160,7 @@ class Acteur:
 
         ## Synchronisation avec le visuel 
         self.rect.topleft = (720 + taillecase *self.x,taillecase *self.y)
+        self.rect_img.center = self.rect.center
 
 
         ## --- Synchroniser la position logique (si présente) ---

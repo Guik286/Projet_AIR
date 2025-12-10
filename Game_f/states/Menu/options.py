@@ -46,7 +46,7 @@ class Options(BaseState):
             elif self.active_index == 1 and event.key == pygame.K_RIGHT:
                 self.Vol_Actuel += 0.01
                 self.Music_Test.set_volume(self.Vol_Actuel)
-                print(self.Vol_Actuel)
+
             elif self.active_index == 1 and event.key == pygame.K_LEFT:
                 self.Vol_Actuel -= 0.01
                 self.Music_Test.set_volume(self.Vol_Actuel)

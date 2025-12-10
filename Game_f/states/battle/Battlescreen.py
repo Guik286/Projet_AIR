@@ -25,7 +25,6 @@ class Level(BaseState):
         self.time_active = 0
         self.time = pygame.time.Clock()
 
-        self.matrice = Matrice_Bagarre()
         self.BL = logique_de_combat
         
 
@@ -51,7 +50,7 @@ class Level(BaseState):
 
         #self.player = Joueur(720+taillecase*self.x,taillecase*self.y)
         #720+ taillecase *rd.randint(0,5),taillecase *rd.randint(0,5)
-        self.player = Joueur(1,1)
+        self.player = Joueur()
         self.ennemi = Ennemi(rd.randint(15,nrow-1),rd.randint(14,ncol-1))
         self.control = control_joueur(self.player)
 
@@ -77,7 +76,6 @@ class Level(BaseState):
         ## Image 
         self.font_dmg = pygame.font.SysFont("Arial",50)
         self.position_grille()
-        self.grid_to_arena()
         
         
 
@@ -89,6 +87,7 @@ class Level(BaseState):
         for ennemi in self.Ennemis:
             self.grid[ennemi.x][ennemi.y] = ennemi
                 # self.grid[i][j] = Objet_BS[self.grid[i][j]]
+
     
     def grid_to_arena(self):
         index = 0
@@ -102,6 +101,11 @@ class Level(BaseState):
                     index += 1
                 else:
                     pass
+    def deplacer_grid(self,old_x,old_y,acteur):
+        
+        x_new,y_new = acteur.x,acteur.y
+        self.grid[x_new][y_new] = self.grid[old_x][old_y]
+        self.grid[old_x][old_y] = None
         
 
             
@@ -127,6 +131,7 @@ class Level(BaseState):
                 self.Ennemis[i].mort()
                 self.Ennemis.pop(i)
                 self.couleur_E.pop(i+1)
+                self.Index_cible = 0
                 
                 break
 
@@ -161,16 +166,22 @@ class Level(BaseState):
 
         ### déclenche IA adversaires f(horloge)
         for i in range(0,len(self.Ennemis),1):
-
             limite = rd.randint(3,5)
 
+            
+
             if self.Ennemis[i].etat == "jouable":
+                
                 
                 if self.Ennemis[i].chrono_action <= limite:
                     self.Ennemis[i].Calcul_PA()
                     
                 else:
-                    self.Ennemis[i].IA_ennemi(self.player)
+                    old_x = self.Ennemis[i].x
+                    old_y = self.Ennemis[i].y
+                    self.Ennemis[i].IA_ennemi(self.player,self.grid)
+                    self.deplacer_grid(old_x,old_y,self.Ennemis[i])
+                    #print(self.grid)
             self.Ennemis[i].ordonnee_indicateur()
 
         ### Sortie vers Fin
@@ -230,9 +241,11 @@ class Level(BaseState):
         surface.fill(pygame.Color('black'))
 
         ## Arene 
-        surface.blit(Image_A,(720,0))
+
+        
 
         pygame.draw.rect(surface,pygame.Color("white"), Batt_Area)
+        surface.blit(Image_A,(720,0))
         ### Menu joueur
         pygame.draw.rect(surface,pygame.Color("lightblue"), Commande_Joueur)
         #Echiquier (tracer de ligne)
@@ -257,19 +270,20 @@ class Level(BaseState):
                 pygame.draw.rect(surface,self.couleur_E[(i+1)],self.Ennemis[i].rect_indicateur)
                 pygame.draw.rect(surface,self.couleur_E[(i+1)],self.Ennemis[i].rect)
 
-                if self.Ennemis[i].hit == True:
-                    surface.blit(self.Ennemis[i].image,self.Ennemis[i].rect_hit)
-                else:
-                    surface.blit(self.Ennemis[i].image,self.Ennemis[i].rect_img)
+
+                surface.blit(self.Ennemis[i].image,self.Ennemis[i].rect_img)
+                self.Ennemis[i].hit -= 1 
+                if self.Ennemis[i].hit < 1 :
+                    self.Ennemis[i].image_hit()
                 
             #
-                if self.Ennemis[i].hit == True:
-                    if pygame.time.get_ticks() - self.starttime <= 200:
-                        surface.blit(self.display_dmg(self.BL(self.player,self.Ennemis[i],self.player.Attaque_index).calcul_dommage()),(self.Ennemis[i].rect.center)+(300,300))
-                    else:
-                        surface.blit(self.display_dmg(self.BL(self.player,self.Ennemis[i],self.player.Attaque_index).calcul_dommage()),(self.Ennemis[i].rect.center))
-                    if pygame.time.get_ticks() - self.starttime >= 300:
-                        self.Ennemis[i].hit = False
+                #if self.Ennemis[i].hit == True:
+                #    if pygame.time.get_ticks() - self.starttime <= 200:
+                #        surface.blit(self.display_dmg(self.BL(self.player,self.Ennemis[i],self.player.Attaque_index).calcul_dommage()),(self.Ennemis[i].rect.center)+(300,300))
+                #    else:
+                #        surface.blit(self.display_dmg(self.BL(self.player,self.Ennemis[i],self.player.Attaque_index).calcul_dommage()),(self.Ennemis[i].rect.center))
+                #    if pygame.time.get_ticks() - self.starttime >= 300:
+                #        self.Ennemis[i].hit = False
 #
 
         #### Affichage du/des joueurs
@@ -299,7 +313,7 @@ class Level(BaseState):
         
         ## Affichage des déplacements possibles
         if self.player.etat_jeu == "map":
-            self.player.afficher_deplacement_possible(surface)
+            self.player.afficher_deplacement_possible(surface,self.grid)
             pygame.draw.rect(surface,pygame.Color("yellow"),self.player.curseur,3)
 
         if self.player.etat == "casting":
@@ -364,8 +378,8 @@ class Level(BaseState):
                 #detecter la case cliquée
                 col = int((pos.x - 720) // taillecase)
                 row = int(pos.y // taillecase)
-                print(row,col)
-                print(self.grid)
+                #print(row,col)
+                #print(self.grid)
                 ## Quand il y'aura un algo de pathfinding, on l'appellera ici
                 ## On permute les valeurs dans la matrice
                 self.grid[pos_i][pos_j] = None
