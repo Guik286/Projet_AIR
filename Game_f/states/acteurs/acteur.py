@@ -8,6 +8,7 @@ import random as rd
 class Acteur:
     def __init__(self,x,y,lp=10,force=0,defense=0,vit=0,PtA=0,etat="cooldown",valeur = 0):
         self.lp = lp
+        self.lp_max = lp
         self.force = force
         self.defense = defense
         self.vit = vit
@@ -18,6 +19,8 @@ class Acteur:
         self.etat_jeu = "menu"
         self.hit = 0
         self.valeur = valeur
+        self.damage = 0
+        
 
       ### Coordonnées sur la matrice ####
 
@@ -137,6 +140,8 @@ class Acteur:
     
     def knockback(self,origin,power):
 
+        self.grid_pos = (self.x,self.y)
+
         # Position de l'attaquant
         pos_attaquant = pygame.math.Vector2(origin)
         # Position de la cible
@@ -153,10 +158,11 @@ class Acteur:
         knockback_distance = power 
 
         nouvelle_pos = self.grid_pos + direction * knockback_distance
+
             
         # Appliquer le déplacement logique
-        self.x = int(nouvelle_pos.x)
-        self.y = int(nouvelle_pos.y)
+        self.x = round(nouvelle_pos.x)
+        self.y = round(nouvelle_pos.y)
 
         ## Synchronisation avec le visuel 
         self.rect.topleft = (720 + taillecase *self.x,taillecase *self.y)

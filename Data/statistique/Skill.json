@@ -17,7 +17,7 @@
           "stat":
             {
                 "PA":1000,
-                "FOR": 5,
+                "FOR": 2,
                 "effet" : "saignement",
                 "Cas" : 1,
                 "CD": "1",

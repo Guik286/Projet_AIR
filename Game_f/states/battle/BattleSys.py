@@ -96,6 +96,7 @@ class control_joueur:
                     player.etat = "casting"
                     player.etat_jeu = "menu"                                  
                     player.Attaque_index = 0
+                    
                 else:
                     print("Pas assez de PA")
                     pass
@@ -125,6 +126,7 @@ class logique_de_combat:
         self.cible = target
         self.flag_PA = True
         self.index = index
+        
 
 
         self.skill_set = striker.Attaque
@@ -143,17 +145,20 @@ class logique_de_combat:
 
 
     def calcul_dommage(self):
-        self.damage = self.striker.force*2 + self.skill_set.stat[self.skill_set.names[self.index]]['FOR'] - self.cible.defense
-        return self.damage
+        self.cible.damage = self.striker.force*2 + self.skill_set.stat[self.skill_set.names[self.index]]['FOR'] - self.cible.defense
+
+        
 
 
 
     def exec_atq(self):
         ### nom de l'attaque
         self.name = self.skill_set.names[self.index]
+        self.calcul_dommage()
         ## check si activable
 
-        self.cible.lp -= max(0,self.calcul_dommage())
+        self.cible.lp -= max(0,self.cible.damage)
+        print(self.cible.lp)
         self.cible.hit = True
         self.cible.get_striked(self.striker,self.skill_set.stat[self.skill_set.names[self.index]])
 

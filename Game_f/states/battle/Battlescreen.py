@@ -10,6 +10,7 @@ import random as rd
 
 from Data.settings import *
 from Game_f.states.battle.ATB import *
+from Game_f.states.battle.UI import UI
 from .BattleSys import control_joueur, logique_de_combat
 from .battlelogic import Matrice_Bagarre
 
@@ -26,6 +27,7 @@ class Level(BaseState):
         self.time = pygame.time.Clock()
 
         self.BL = logique_de_combat
+        self.UI = UI
         
 
         ### Parametres de temps
@@ -54,7 +56,7 @@ class Level(BaseState):
         self.ennemi = Ennemi(19,17)
         self.control = control_joueur(self.player)
 
-        self.ennemi2 = Ennemi(0,16)
+        self.ennemi2 = Ennemi(3,16)
 
         self.ref = Acteur(0,0)
         self.Ennemis = [self.ennemi,self.ennemi2]
@@ -93,7 +95,7 @@ class Level(BaseState):
     def deplacer_grid(self,old_x,old_y,acteur):
         
         x_new,y_new = acteur.x,acteur.y
-        if not old_x == x_new and not old_y == y_new:
+        if old_x != x_new or old_y != y_new:
             self.grid[x_new][y_new] = self.grid[old_x][old_y]
             self.grid[old_x][old_y] = None
         else : 
@@ -168,9 +170,15 @@ class Level(BaseState):
                     self.Ennemis[i].Calcul_PA()
                     
                 else:
+
                     old_x = self.Ennemis[i].x
                     old_y = self.Ennemis[i].y
+                    
+
+
+                    
                     self.Ennemis[i].IA_ennemi(self.player,self.grid)
+
                     self.deplacer_grid(old_x,old_y,self.Ennemis[i])
                     for k in range(0,nrow,1):
     
@@ -180,7 +188,7 @@ class Level(BaseState):
                             else:
                                 print("X",end=" ")
                         print("||")
-                    print(f"Ennemis {i}",self.Ennemis[i].x,self.Ennemis[i].y)
+
             self.Ennemis[i].ordonnee_indicateur()
 
         ### Sortie vers Fin
@@ -218,7 +226,8 @@ class Level(BaseState):
 
 #### Affiche les dommages 
     def display_dmg(self,dommage):
-        self.phrase_dmg = self.font_dmg.render(f"{dommage}",True,(255,255,0))
+        
+        self.phrase_dmg = self.font_dmg.render(f"{dommage}",True,(255,100,0))
         return self.phrase_dmg
     
 ###### Selection de l'ennemi 
@@ -268,6 +277,7 @@ class Level(BaseState):
             for i in range(0,len(self.Ennemis),1):
                 pygame.draw.rect(surface,self.couleur_E[(i+1)],self.Ennemis[i].rect_indicateur)
                 pygame.draw.rect(surface,self.couleur_E[(i+1)],self.Ennemis[i].rect)
+                self.UI(self.Ennemis[i]).lifebar(surface)
 
 
                 surface.blit(self.Ennemis[i].image,self.Ennemis[i].rect_img)
@@ -278,9 +288,9 @@ class Level(BaseState):
             #
                 
                 if self.Ennemis[i].hit > 5:
-                    surface.blit(self.display_dmg(self.BL(self.player,self.Ennemis[i],self.player.Attaque_index).calcul_dommage()),(self.Ennemis[i].rect.center)+(500,500))
+                    surface.blit(self.display_dmg(self.Ennemis[i].damage),(self.Ennemis[i].rect.center)+(500,500))
                 elif self.Ennemis[i].hit <=5 and self.Ennemis[i].hit >0:
-                    surface.blit(self.display_dmg(self.BL(self.player,self.Ennemis[i],self.player.Attaque_index).calcul_dommage()),(self.Ennemis[i].rect.center))
+                    surface.blit(self.display_dmg(self.Ennemis[i].damage),(self.Ennemis[i].rect.center))
 
 #
 
@@ -291,6 +301,9 @@ class Level(BaseState):
         pygame.draw.rect(surface, self.couleur_E[0], self.player.rect)
         self.ref.ordonnee_indicateur()
         pygame.draw.rect(surface,pygame.Color("black"),self.ref.rect_indicateur) 
+        self.UI(self.player).lifebar(surface)
+
+        
         
 
 
@@ -357,10 +370,10 @@ class Level(BaseState):
 
                 
                 self.control.logique_valider(event,self.player,self.Ennemis[self.Index_cible],cout_total,self.active_index,self.Ennemis,self.player.Attaque_index)
+                
                 ## Application du deplacement dans la matrice
                 for i in range(0,len(self.Ennemis),1):
                     self.deplacer_grid(x[i],y[i],self.Ennemis[i])
-                self.starttime = pygame.time.get_ticks()
                 
         ## On repart en arriere
             elif event.key == pygame.K_BACKSPACE:
