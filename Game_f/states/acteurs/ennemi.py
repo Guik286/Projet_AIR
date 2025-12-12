@@ -10,7 +10,7 @@ from math import sqrt
 
 class Ennemi(Acteur):
     def __init__(self,x,y):
-        super(Ennemi,self).__init__(x,y,10,1,0,0,0,"cooldown",2)
+        super(Ennemi,self).__init__(x,y,10,1,0,0,0,"cooldown",2,3000)
         ## Vitesse joueur
         self.dureetour = 8
         # etat du joueur dans le gameplay
@@ -57,7 +57,11 @@ class Ennemi(Acteur):
 
     #### Méthodes ennemis ####
     def Calcul_PA(self):
-        self.PA = round(2 * self.chrono_action*1080 / self.dureetour)
+        self.PA = round(self.PA_max * self.chrono_action*5 / (self.dureetour*6))
+        print(self)
+        print("chrono",self.chrono_action)
+        print("duree tour",self.dureetour)
+        print("PA",self.PA)
 
 
 
@@ -111,19 +115,29 @@ class Ennemi(Acteur):
     
     def IA_ennemi(self,cible,grid):
         # Simple IA : se déplace vers le joueur et attaque s'il est à portée
+        ## On met à jour les PA de l'ennemi
+        self.Calcul_PA()
+
+        ## On détermine une limite à partir de laquelle l'ennemi agit
+        limite = self.PA_max*rd.randint(1000,5000)/5000
+        print(limite)
+        if self.PA < limite:
+            pass
+        else:
         
 
-        if sqrt((self.x - cible.x)**2 + (self.y - cible.y)**2) > sqrt(2):
+            if sqrt((self.x - cible.x)**2 + (self.y - cible.y)**2) > sqrt(2):
 
-            self.deplacement_ennemi(cible,grid)
+                self.deplacement_ennemi(cible,grid)
+
+            else:
+
+                self.Action_ennemi(cible)
             
-        else:
-            self.Calcul_PA()
-            self.Action_ennemi(cible)
-            
-        self.chrono_action = 5* self.dureetour/6
-        self.wait = False
-        self.etat = "casting"
+            self.chrono_action = 5* self.dureetour/6
+            self.wait = False
+            self.etat = "casting"
+        
 
     def flash_on_hit(self):
         if self.hit ==True:

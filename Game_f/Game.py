@@ -1,4 +1,5 @@
 import pygame
+from Game_f.states.battle.Battlescreen import Level
 
 
 
@@ -29,6 +30,8 @@ class Game(object):
         self.state.startup(persistent)
 
 
+
+
     def update(self, dt):
         if self.state.quit:
             self.done = True
@@ -36,15 +39,24 @@ class Game(object):
             self.flip_state()
         self.state.update(dt)
 
+
     def draw(self):
         self.state.draw(self.screen)
 
     def run(self):
+
         while not self.done:
+            if self.state_name == "Victoire":
+                print("Reinitialisation du niveau...")
+                self.states["GAMEPLAY"].done = False
+
+                Level().__init__()  ## Reinitialisation du niveau pour le joueur
+
             dt = self.clock.tick() /1000
             self.event_loop()
             self.update(dt)
             self.draw()
             pygame.display.update()
+
 
             

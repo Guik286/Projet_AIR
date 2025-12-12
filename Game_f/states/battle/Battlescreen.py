@@ -23,6 +23,7 @@ from .battlelogic import Matrice_Bagarre
 class Level(BaseState):
     def __init__(self):
         super(Level, self).__init__()
+        self.done = False
         self.time_active = 0
         self.time = pygame.time.Clock()
 
@@ -136,7 +137,10 @@ class Level(BaseState):
             if self.Ennemis == []:
                 self.next_state = "Victoire"
                 self.done = True
+                #Recharge pour le niveau suivant
+                
                 self.player.experience += 1
+                print("Exp +1 ! Total :",self.player.experience)
 
 
 
@@ -144,6 +148,7 @@ class Level(BaseState):
 ################################################## APPEL DANS GAME ######################################################################
     ### Calcul du temps
     def update(self, dt):
+
 
         
         ## Calcul temps ref
@@ -163,31 +168,21 @@ class Level(BaseState):
             
 
             if self.Ennemis[i].etat == "jouable":
-                limite = rd.randint(1,10)
+                
+                old_x = self.Ennemis[i].x
+                old_y = self.Ennemis[i].y
                 
                 
-                if self.Ennemis[i].chrono_action <= limite:
-                    self.Ennemis[i].Calcul_PA()
-                    
-                else:
-
-                    old_x = self.Ennemis[i].x
-                    old_y = self.Ennemis[i].y
-                    
-
-
-                    
-                    self.Ennemis[i].IA_ennemi(self.player,self.grid)
-
-                    self.deplacer_grid(old_x,old_y,self.Ennemis[i])
-                    for k in range(0,nrow,1):
-    
-                        for j in range(0,ncol,1):
-                            if self.grid[j][k] is None:
-                                print("0",end=" ")
-                            else:
-                                print("X",end=" ")
-                        print("||")
+                self.Ennemis[i].IA_ennemi(self.player,self.grid)
+                self.deplacer_grid(old_x,old_y,self.Ennemis[i])
+                #for k in range(0,nrow,1):
+#
+                #    for j in range(0,ncol,1):
+                #        if self.grid[j][k] is None:
+                #            print("0",end=" ")
+                #        else:
+                #            print("X",end=" ")
+                #    print("||")
 
             self.Ennemis[i].ordonnee_indicateur()
 
@@ -287,10 +282,9 @@ class Level(BaseState):
                 
             #
                 
-                if self.Ennemis[i].hit > 5:
-                    surface.blit(self.display_dmg(self.Ennemis[i].damage),(self.Ennemis[i].rect.center)+(500,500))
-                elif self.Ennemis[i].hit <=5 and self.Ennemis[i].hit >0:
-                    surface.blit(self.display_dmg(self.Ennemis[i].damage),(self.Ennemis[i].rect.center))
+                if self.Ennemis[i].hit > 0:
+                    self.UI(self.Ennemis[i]).display_damage(surface)
+                    
 
 #
 

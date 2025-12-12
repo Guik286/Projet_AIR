@@ -1,6 +1,7 @@
 import pygame
 from GI import GraphicInterface
 from Game_f.states.base import BaseState
+from Game_f.states.battle.Battlescreen import Level
 
 
 
@@ -11,13 +12,15 @@ class Menu(BaseState):
         super(Menu, self).__init__()
         self.active_index = 0
         self.options = ["New Game","Load Game","Options","Quit"]
+
+        
     
 
         
         
         
         ### Selection des options
-
+    
     #def render_text(self, index):
     #    color = pygame.Color("red") if index == self.active_index else pygame.Color("white")
     #    return self.font.render(self.options[index], True, color)
@@ -28,6 +31,7 @@ class Menu(BaseState):
 
     def handle_action(self):
         if self.active_index == 0:
+            Level().__init__()  ## Initialisation du niveau pour le joueur
             self.next_state = "GAMEPLAY"
             self.done = True
         elif self.active_index == 1:

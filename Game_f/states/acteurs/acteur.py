@@ -6,7 +6,9 @@ import random as rd
 
 
 class Acteur:
-    def __init__(self,x,y,lp=10,force=0,defense=0,vit=0,PtA=0,etat="cooldown",valeur = 0):
+    def __init__(self,x,y,lp=10,force=0,defense=0,vit=0,PtA=0,etat="cooldown",valeur = 0,PA_max=0):
+
+        # Statistique de base
         self.lp = lp
         self.lp_max = lp
         self.force = force
@@ -20,13 +22,16 @@ class Acteur:
         self.hit = 0
         self.valeur = valeur
         self.damage = 0
-        
+        self.PA_max = PA_max
+        if self.PA > self.PA_max:
+            self.PA = self.PA_max
 
       ### Coordonnées sur la matrice ####
 
         
 
         self.grid_pos = (self.x,self.y)
+
 
 
 
