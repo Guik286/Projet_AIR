@@ -94,13 +94,16 @@ class Level(BaseState):
     
 
     def deplacer_grid(self,old_x,old_y,acteur):
-        
         x_new,y_new = acteur.x,acteur.y
-        if old_x != x_new or old_y != y_new:
-            self.grid[x_new][y_new] = self.grid[old_x][old_y]
-            self.grid[old_x][old_y] = None
-        else : 
+        if x_new < 0 or x_new >= ncol or y_new < 0 or y_new >= nrow:
             pass
+        else:
+
+            if old_x != x_new or old_y != y_new:
+                self.grid[x_new][y_new] = self.grid[old_x][old_y]
+                self.grid[old_x][old_y] = None
+            else : 
+                pass
 
             
 
@@ -175,14 +178,14 @@ class Level(BaseState):
                 
                 self.Ennemis[i].IA_ennemi(self.player,self.grid)
                 self.deplacer_grid(old_x,old_y,self.Ennemis[i])
-                #for k in range(0,nrow,1):
-#
-                #    for j in range(0,ncol,1):
-                #        if self.grid[j][k] is None:
-                #            print("0",end=" ")
-                #        else:
-                #            print("X",end=" ")
-                #    print("||")
+                for k in range(0,nrow,1):
+
+                    for j in range(0,ncol,1):
+                        if self.grid[j][k] is None:
+                            print("0",end=" ")
+                        else:
+                            print("X",end=" ")
+                    print("||")
 
             self.Ennemis[i].ordonnee_indicateur()
 
@@ -219,11 +222,7 @@ class Level(BaseState):
 #### text des divers menus et leurs positionnements
 
 
-#### Affiche les dommages 
-    def display_dmg(self,dommage):
-        
-        self.phrase_dmg = self.font_dmg.render(f"{dommage}",True,(255,100,0))
-        return self.phrase_dmg
+
     
 ###### Selection de l'ennemi 
     def selection_ennemi(self,index):
@@ -319,7 +318,7 @@ class Level(BaseState):
         ## Affichage des déplacements possibles
         if self.player.etat_jeu == "map":
             self.player.afficher_deplacement_possible(surface,self.grid)
-            pygame.draw.rect(surface,pygame.Color("yellow"),self.player.curseur,3)
+            
 
         if self.player.etat == "casting":
             pass
@@ -391,39 +390,45 @@ class Level(BaseState):
                 pos_j = self.player.y
                 ## On récupère la position du clic de la souris
                 pos = pygame.math.Vector2(pygame.mouse.get_pos())
-                #detecter la case cliquée
-                col = int((pos.x - 720) // taillecase)
-                row = int(pos.y // taillecase)
-                #print(row,col)
-                #print(self.grid)
-                ## Quand il y'aura un algo de pathfinding, on l'appellera ici
-                ## On permute les valeurs dans la matrice
-                self.grid[pos_i][pos_j] = None
-                self.grid[row][col] = self.player
-                self.player.deplacement_acteur(col,row)
-                ## On met à jour les coordonnées du joueur  
-                
-                ## On déplace le sprite du joueur
-                
-                
+                if pos.x < 720 or pos.x > 1920 or pos.y <0 or pos.y >1080:
+                    pass
+                else:
 
-                
+                    #detecter la case cliquée
+                    col = int((pos.x - 720) // taillecase)
+                    row = int(pos.y // taillecase)
 
-                
 
-                #pos_J = pygame.math.Vector2(self.player.rect.center)
-                #
-                #self.player.x,self.player.y = pos
-                #print(self.player.x,self.player.y)
-                #movement = pos - pos_J
-                #self.player.rect.move_ip(movement)
-                #self.player
-                self.player.chrono_action = 0
-                self.player.etat = "cooldown"
-                self.player.etat_jeu = "menu"
-                self.player.wait = False
-                for i in range(0,len(self.Ennemis),1):
-                    self.Ennemis[i].wait = False
+                    #print(row,col)
+                    #print(self.grid)
+                    ## Quand il y'aura un algo de pathfinding, on l'appellera ici
+                    ## On permute les valeurs dans la matrice
+                    self.grid[pos_i][pos_j] = None
+                    self.grid[col][row] = self.player
+                    self.player.deplacement_acteur(col,row)
+                    ## On met à jour les coordonnées du joueur  
+
+                    ## On déplace le sprite du joueur
+
+
+
+
+
+
+
+                    #pos_J = pygame.math.Vector2(self.player.rect.center)
+                    #
+                    #self.player.x,self.player.y = pos
+                    #print(self.player.x,self.player.y)
+                    #movement = pos - pos_J
+                    #self.player.rect.move_ip(movement)
+                    #self.player
+                    self.player.chrono_action = 0
+                    self.player.etat = "cooldown"
+                    self.player.etat_jeu = "menu"
+                    self.player.wait = False
+                    for i in range(0,len(self.Ennemis),1):
+                        self.Ennemis[i].wait = False
 
 
 

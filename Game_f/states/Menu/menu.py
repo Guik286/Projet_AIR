@@ -12,6 +12,12 @@ class Menu(BaseState):
         super(Menu, self).__init__()
         self.active_index = 0
         self.options = ["New Game","Load Game","Options","Quit"]
+        self.Image_menu = pygame.image.load('Data/graphics/BackgroundTitle/Menu_BackGround_Project_AIR.jpg')
+        width = self.Image_menu.get_width()
+        height = self.Image_menu.get_height()
+        self.Image_Menu_T = pygame.transform.scale(self.Image_menu,(1920,1080))
+        self.Fond = self.Image_Menu_T.get_rect().center = (960,540) 
+        
 
         
     
@@ -66,4 +72,5 @@ class Menu(BaseState):
     
     def draw(self, surface):
         surface.fill(pygame.Color("black"))
+        surface.blit(self.Image_Menu_T,(0,0))
         GraphicInterface(self.options,self.active_index,self.screen_rect).draw(surface)

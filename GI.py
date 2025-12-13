@@ -16,7 +16,10 @@ class GraphicInterface:
 
 
     def render_text(self,index):  
-        self.color = pygame.Color("red") if index == self.index else pygame.Color("white")
+        if self.texte == ["New Game","Load Game","Options","Quit"]:
+            self.color = pygame.Color("red") if index == self.index else pygame.Color("blue")
+        else:
+            self.color = pygame.Color("red") if index == self.index else pygame.Color("white")
         return self.font.render(self.texte[index], True, self.color)  
     
     def get_text_position(self,index):

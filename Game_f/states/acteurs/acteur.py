@@ -26,6 +26,12 @@ class Acteur:
         if self.PA > self.PA_max:
             self.PA = self.PA_max
 
+        ### Image de l'acteur ###
+        self.image = None
+        if self.image is not None:
+            self.rect_img = self.image.get_rect()
+            self.rect_img.center = self.rect.center
+
       ### Coordonnées sur la matrice ####
 
         
@@ -115,8 +121,6 @@ class Acteur:
         
         self.rect_indicateur.y = y
 
-    def deplacement(self):
-        pass
 
 
 
@@ -124,9 +128,20 @@ class Acteur:
 ################ Spatial ############################## 
 
     def deplacement_acteur(self,new_x,new_y):
+        if new_x <0 :
+            new_x =0
+        if new_y <0 :
+            new_y =0
+        if new_x >ncol -1:
+            new_x = ncol -1
+        if new_y >nrow -1:
+            new_y = nrow -1
+        
         self.x = new_x
         self.y = new_y
         self.rect.topleft = (720 + taillecase *self.x,taillecase *self.y)
+        if self.image is not None:
+            self.rect_img.center = self.rect.center
 
 
 
@@ -147,33 +162,23 @@ class Acteur:
 
         self.grid_pos = (self.x,self.y)
 
+
         # Position de l'attaquant
         pos_attaquant = pygame.math.Vector2(origin)
         # Position de la cible
         pos_cible = pygame.math.Vector2(self.rect.center)
-
-
         # Calcul du vecteur de knockback (direction de la poussée)
         direction = pos_cible - pos_attaquant
-
-
         if direction.length() != 0:  # Évite la division par zéro
             direction = direction.normalize()
-
         knockback_distance = power 
-
         nouvelle_pos = self.grid_pos + direction * knockback_distance
-
-            
         # Appliquer le déplacement logique
-        self.x = round(nouvelle_pos.x)
-        self.y = round(nouvelle_pos.y)
+        self.deplacement_acteur(round(nouvelle_pos.x),round(nouvelle_pos.y))
 
         ## Synchronisation avec le visuel 
-        self.rect.topleft = (720 + taillecase *self.x,taillecase *self.y)
-        self.rect_img.center = self.rect.center
-
-
+        #self.rect.topleft = (720 + taillecase *self.x,taillecase *self.y)
+        #
         ## --- Synchroniser la position logique (si présente) ---
         ## Exemple : si l'acteur garde des coordonnées de case (case_x, case_y)
         #if hasattr(self.cible, "case_x") and hasattr(self.cible, "case_y"):

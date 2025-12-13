@@ -9,8 +9,8 @@ class Options(BaseState):
         self.choix = ["Retour au Menu" , "Volume :" ]
         self.Vol_Bar = pygame.Rect(300,500,500,40)
 
-        self.Music_Test = pygame.mixer.Sound('Data/audio/gnosiaop.mp3')
-        self.Music_Test.set_volume(0)
+        self.Music_Test = pygame.mixer.Sound('Data/audio/Mysterie_of_the_archipelago_experimental.mp3')
+        self.Music_Test.set_volume(0.05)
         self.Music_Test.play(loops = -1)
 
         self.Vol_Actuel = self.Music_Test.get_volume()

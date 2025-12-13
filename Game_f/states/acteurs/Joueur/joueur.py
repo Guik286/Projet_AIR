@@ -2,12 +2,13 @@ import pygame
 from Data.settings import *
 from .Attaque_joueur import *
 from ..acteur import Acteur
+from math import sqrt
 
 
 
  
 class Joueur(Acteur):
-    def __init__(self,x=0,y=0,lp = 300,force = 10,defense = 0,vit = 0,PtA = 0,etat = "cooldown"):
+    def __init__(self,x=0,y=0,lp = 300,force = 0,defense = 0,vit = 0,PtA = 0,etat = "cooldown"):
         super(Joueur,self).__init__(x,y,lp,force,defense,vit,PtA,etat)
         self.experience = 0 
         self.curseur = pygame.Rect((self.x,self.y),(taillecase,taillecase))
@@ -24,6 +25,7 @@ class Joueur(Acteur):
         self.Attaque_index = 0
         self.Attaque = Attaque_joueur()
         self.signal_act = False
+        
 
         ## Valeur dans la matrice 
 
@@ -60,13 +62,16 @@ class Joueur(Acteur):
     def afficher_deplacement_possible(self,surface,grid):
         PA = self.PA
         max_case = PA // self.cout_deplacement
+
         origine = (self.rect.x - 720)//taillecase , (self.rect.y)//taillecase
+        
         for i in range(-max_case, max_case + 1):
             for j in range(-max_case, max_case + 1):
-                if abs(i) + abs(j) <= max_case:
+                D = sqrt(abs(i)**2 + abs(j)**2)
+                if D < max_case:
                     x = origine[0] + i
                     y = origine[1] + j
-                    if 0 <= x < 20 and 0 <= y < 18 and grid[y][x] is None:
+                    if 0 <= x < 20 and 0 <= y < 18 and grid[x][y] is None:
                         rect = pygame.Rect(720 + x * taillecase, y * taillecase, taillecase, taillecase)
                         pygame.draw.rect(surface, pygame.Color("gray"), rect, 3)
 

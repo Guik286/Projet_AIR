@@ -84,8 +84,8 @@ class Ennemi(Acteur):
             
 
             
-            
-            self.rect.x,self.rect.y = 720 + self.x * taillecase,self.y * taillecase
+            self.deplacement_acteur(self.x,self.y)
+            #self.rect.x,self.rect.y = 720 + self.x * taillecase,self.y * taillecase
             
             if self.x != x and self.y != y:
                 self.PA -= self.cout_deplacement_diag
@@ -94,7 +94,7 @@ class Ennemi(Acteur):
                 self.PA -= self.cout_deplacement
 
             print(f"L'ennemi se déplace en ({self.x},{self.y})")
-            self.rect_img.center = self.rect.center
+
             
             
     

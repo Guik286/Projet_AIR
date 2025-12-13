@@ -48,9 +48,10 @@ class Game(object):
         while not self.done:
             if self.state_name == "Victoire":
                 print("Reinitialisation du niveau...")
-                self.states["GAMEPLAY"].done = False
+                print(self.states["GAMEPLAY"].done)
+                self.states["GAMEPLAY"] = None
+                self.states["GAMEPLAY"] = Level()
 
-                Level().__init__()  ## Reinitialisation du niveau pour le joueur
 
             dt = self.clock.tick() /1000
             self.event_loop()
