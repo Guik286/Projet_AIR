@@ -6,7 +6,7 @@ import random as rd
 
 
 class Acteur:
-    def __init__(self,x,y,lp=10,force=0,defense=0,vit=0,PtA=0,valeur = 0,PA_max=0):
+    def __init__(self,x,y,lp=10,force=0,defense=0,vit=0,PtA=0,PA_max=0):
 
         # Statistique de base
         self.lp = lp
@@ -19,7 +19,6 @@ class Acteur:
         self.PA = PtA
         self.etat_jeu = "menu"
         self.hit = 0
-        self.valeur = valeur
         self.damage = 0
         self.PA_max = PA_max
         if self.PA > self.PA_max:
@@ -64,10 +63,11 @@ class Acteur:
         # "casting" : temps durant lequel l'action est en cours d'execution
         # "action" : temps durant lequel l'action s'execute
         # "mort" : acteur mort, plus d'action possible
-        self.Etats = [{"nom" : "cooldown", "modif" : 1, "tps_max" : 1,"long" : 1/6, "origine" : lenATB},
+        self.Etats = [{"nom" : "cooldown", "modif" : 1, "tps_max" : 2,"long" : 1/6, "origine" : lenATB},
                       {"nom" : "jouable", "modif" : 1, "tps_max" : 10, "long" : 4/6, "origine" : 5*lenATB/6},
-                      {"nom" : "casting", "modif" : 1, "tps_max" : 100, "long" : 1/6, "origine" : lenATB/6}] #,"trigger" : self.casting()}]
+                      {"nom" : "casting", "modif" : 1, "tps_max" : 1, "long" : 1/6, "origine" : lenATB/6}] #,"trigger" : self.casting()}]
         self.index_etat = 0
+        self.Etat_mort = [{"nom" : "mort", "modif" : 0, "tps_max" : 0,"long" : 0, "origine" : 0}]
         self.etat = self.Etats[self.index_etat]
 
         self.chrono = 0
@@ -104,7 +104,7 @@ class Acteur:
     def mort(self):
         if self.lp <=0 :
             self.lp = 0
-            self.etat = "mort"
+            self.etat = self.Etat_mort
 
     def get_striked(self,striker,skill):
         if self.hit <1 :

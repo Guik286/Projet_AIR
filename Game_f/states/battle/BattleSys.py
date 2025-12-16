@@ -63,8 +63,10 @@ class control_joueur:
         if event.key == pygame.K_RETURN:
 
             #Commande menu
-            if player.etat_jeu == "menu" and player.etat == "jouable":
+            if player.etat_jeu == "menu" and (player.etat["nom"] == "jouable" or player.PA == player.PA_max):
                 self.player.wait = True
+                print("Bling!!!!")
+                #self.player.signal_act = True
         
                 player.etat_jeu = player.menuBattScreen[(index_menu+1)]
                     
@@ -89,14 +91,16 @@ class control_joueur:
                     
                     logique_de_combat(player,cible,index).exec_atq()
 
-                    player.chrono_action = 5*player.dureetour/6 + 0.1 # On set le point de départ du chrono de l'attaque (zone de cast a definir en init)
                     for i in range(0,len(acteurs),1):
                         acteurs[i].wait = False
                     player.wait = False
-                    player.etat_jeu = "menu"
-                    player.etat = "casting"
+                    if player.etat["nom"] =="jouable":
+                        player.etat = player.Etats[player.index_etat+1]
+                    else:
+                        player.etat = player.Etats[player.index_etat]
                     player.etat_jeu = "menu"                                  
                     player.Attaque_index = 0
+                    player.signal_act = True
                     
                 else:
                     print("Pas assez de PA")
@@ -114,7 +118,7 @@ class control_joueur:
                     player.PA -= cout_total
                     # Reset l'état
                     player.chrono_action = 5 * player.dureetour / 6 + 0.1
-                    player.etat = "casting"
+                    player.etat = player.Etats[player.index_etat]
                     player.etat_jeu = "menu"
                     player.wait = False
                     for i in [0]:

@@ -10,7 +10,7 @@ from math import sqrt
 
 class Ennemi(Acteur):
     def __init__(self,x,y):
-        super(Ennemi,self).__init__(x,y,10,1,0,0,0,2,3000)
+        super(Ennemi,self).__init__(x,y,10,1,0,0,0,3000)
         ## Vitesse joueur
         self.temps_tot = 8
         # etat du joueur dans le gameplay

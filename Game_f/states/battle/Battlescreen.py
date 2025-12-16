@@ -12,7 +12,7 @@ from Data.settings import *
 from Game_f.states.battle.ATB import *
 from Game_f.states.battle.UI import UI
 from .BattleSys import control_joueur, logique_de_combat
-from .battlelogic import Matrice_Bagarre
+#from .battlelogic import Matrice_Bagarre
 
 
 
@@ -326,7 +326,7 @@ class Level(BaseState):
 
         player_x, player_y = (self.player.rect.x - 720) // taillecase, self.player.rect.y // taillecase
 
-        self.player.PA = round(2 * self.player.chrono*1000 / 2)
+        
         
         max_cases = self.player.PA // self.player.cout_deplacement
         # Position actuelle en coordonnées de grille
@@ -339,7 +339,7 @@ class Level(BaseState):
         if event.type == pygame.QUIT:
             self.quit = True
         
-
+        
         elif event.type == pygame.KEYDOWN:
             if event.key == pygame.K_ESCAPE:
                 self.quit = True
