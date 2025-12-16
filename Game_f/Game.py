@@ -47,8 +47,6 @@ class Game(object):
 
         while not self.done:
             if self.state_name == "Victoire":
-                print("Reinitialisation du niveau...")
-                print(self.states["GAMEPLAY"].done)
                 self.states["GAMEPLAY"] = None
                 self.states["GAMEPLAY"] = Level()
 

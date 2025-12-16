@@ -52,3 +52,17 @@ Objet_attaque = pygame.Rect((0,1*SCREENHEIGHT/3),(2*SCREENWIDTH/8,1*SCREENHEIGHT
 ### Matrice battlescreen dico :
 
 Objet_BS = {1 : "Joueur", 2 : "Ennemi"}
+
+def print_grille(grid):
+    for k in range(0,nrow,1):
+
+        for j in range(0,ncol,1):
+            if grid[j][k] is None:
+                print("0",end=" ")
+            elif grid[j][k] == "possible":
+                print(".",end=" ")
+            else:
+                print("X",end=" ")
+        print("||")
+    print("===============================")
+

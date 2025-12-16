@@ -61,8 +61,7 @@ class Level(BaseState):
 
         self.ref = Acteur(0,0)
         self.Ennemis = [self.ennemi,self.ennemi2]
-        for ennemi in self.Ennemis:
-            print(ennemi.x,ennemi.y)
+
             
         
         self.Index_cible = 0
@@ -158,11 +157,11 @@ class Level(BaseState):
         self.ref.calcul_temps_ref(dt)
 
         ### Horloge joueur
-        self.player.calcul_temps_acteur(self.ref.dureetour,dt)
+        self.player.calcul_temps_acteur(dt)
 
         # Horloge adversaires
         for i in range(0,len(self.Ennemis),1):
-            self.Ennemis[i].calcul_temps_acteur(self.ref.dureetour,dt)
+            self.Ennemis[i].calcul_temps_acteur(dt)
 
         
         ### déclenche IA adversaires f(horloge)
@@ -178,14 +177,7 @@ class Level(BaseState):
                 
                 self.Ennemis[i].IA_ennemi(self.player,self.grid)
                 self.deplacer_grid(old_x,old_y,self.Ennemis[i])
-                for k in range(0,nrow,1):
-
-                    for j in range(0,ncol,1):
-                        if self.grid[j][k] is None:
-                            print("0",end=" ")
-                        else:
-                            print("X",end=" ")
-                    print("||")
+                #print_grille(self.grid)
 
             self.Ennemis[i].ordonnee_indicateur()
 
@@ -319,6 +311,7 @@ class Level(BaseState):
         if self.player.etat_jeu == "map":
             self.player.afficher_deplacement_possible(surface,self.grid)
             
+            
 
         if self.player.etat == "casting":
             pass
@@ -333,7 +326,7 @@ class Level(BaseState):
 
         player_x, player_y = (self.player.rect.x - 720) // taillecase, self.player.rect.y // taillecase
 
-        self.player.PA = round(2 * self.player.chrono_action*1000 / self.player.dureetour)
+        self.player.PA = round(2 * self.player.chrono*1000 / 2)
         
         max_cases = self.player.PA // self.player.cout_deplacement
         # Position actuelle en coordonnées de grille
@@ -392,7 +385,7 @@ class Level(BaseState):
                 pos = pygame.math.Vector2(pygame.mouse.get_pos())
                 if pos.x < 720 or pos.x > 1920 or pos.y <0 or pos.y >1080:
                     pass
-                else:
+                elif self.grid[int((pos.x - 720) // taillecase)][int(pos.y // taillecase)] == "possible":
 
                     #detecter la case cliquée
                     col = int((pos.x - 720) // taillecase)
@@ -429,6 +422,9 @@ class Level(BaseState):
                     self.player.wait = False
                     for i in range(0,len(self.Ennemis),1):
                         self.Ennemis[i].wait = False
+                elif self.grid[int((pos.x - 720) // taillecase)][int(pos.y // taillecase)] is not "possible":
+                    self.control.logique_echap(self.player,self.Ennemis)
+                        
 
 
 

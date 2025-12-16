@@ -10,9 +10,9 @@ from math import sqrt
 
 class Ennemi(Acteur):
     def __init__(self,x,y):
-        super(Ennemi,self).__init__(x,y,10,1,0,0,0,"cooldown",2,3000)
+        super(Ennemi,self).__init__(x,y,10,1,0,0,0,2,3000)
         ## Vitesse joueur
-        self.dureetour = 8
+        self.temps_tot = 8
         # etat du joueur dans le gameplay
         self.rect_indicateur = pygame.Rect((1920/3-50,1080),(50,10))
         self.image_hit()
@@ -31,37 +31,21 @@ class Ennemi(Acteur):
 
 
 
-    def calcul_temps_acteur(self,ref,dt):
+    def calcul_temps_acteur(self,dt):
     ### Création d'un seuil entre 2 états (casting/jouable) pour geler le temps a la fin du temps de jeu, et ne pas perdre l'action du joueur
-        seuil = 5 * self.dureetour / 6.0
-        if self.wait:
+        if self.etat is not "cooldown":
             pass
-        elif self.wait == False and self.etat != "casting":
-            self.chrono_action += dt
-        elif self.wait == False and self.etat == "casting":
-            self.chrono_action +=  dt * self.dureetour / ref
         else:
-            if  self.etat_jeu == "menu" and self.chrono_action < seuil:
-                self.chrono_action += dt
-        if self.chrono_action >= self.dureetour:
-            self.chrono_action = 0
-        elif self.chrono_action > seuil and self.etat == "jouable":
-            self.wait = True
-        elif self.chrono_action > self.dureetour / 6.0 and self.chrono_action <= seuil:
-            self.etat = "jouable"
-        elif self.chrono_action <= self.dureetour / 6.0:
-            self.etat = "cooldown"
+            self.calcul_temps_ref(dt)
+
 
 
 
 
     #### Méthodes ennemis ####
     def Calcul_PA(self):
-        self.PA = round(self.PA_max * self.chrono_action*5 / (self.dureetour*6))
-        print(self)
-        print("chrono",self.chrono_action)
-        print("duree tour",self.dureetour)
-        print("PA",self.PA)
+        self.PA = round(self.PA_max * self.chrono*5 / 2)
+
 
 
 
@@ -120,7 +104,6 @@ class Ennemi(Acteur):
 
         ## On détermine une limite à partir de laquelle l'ennemi agit
         limite = self.PA_max*rd.randint(1000,5000)/5000
-        print(limite)
         if self.PA < limite:
             pass
         else:
@@ -134,7 +117,7 @@ class Ennemi(Acteur):
 
                 self.Action_ennemi(cible)
             
-            self.chrono_action = 5* self.dureetour/6
+            self.chrono = 200
             self.wait = False
             self.etat = "casting"
         

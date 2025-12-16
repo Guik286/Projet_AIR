@@ -67,6 +67,7 @@ class control_joueur:
                 self.player.wait = True
         
                 player.etat_jeu = player.menuBattScreen[(index_menu+1)]
+                    
                 for i in range(0,len(acteurs),1):
                     acteurs[i].wait = True
             ##Commande attaque
@@ -145,7 +146,10 @@ class logique_de_combat:
 
 
     def calcul_dommage(self):
-        self.cible.damage = self.striker.force*2 + self.skill_set.stat[self.skill_set.names[self.index]]['FOR'] - self.cible.defense
+        self.cible.defense = max(1,self.cible.defense ) ## Pour éviter la division par 0
+        base = self.skill_set.stat[self.skill_set.names[self.index]]['FOR']
+        self.cible.damage = base * (1+self.striker.force/self.cible.defense) * rd.uniform(0.85,1.15)
+        self.cible.damage = int(self.cible.damage)
 
         
 

@@ -6,7 +6,7 @@ import random as rd
 
 
 class Acteur:
-    def __init__(self,x,y,lp=10,force=0,defense=0,vit=0,PtA=0,etat="cooldown",valeur = 0,PA_max=0):
+    def __init__(self,x,y,lp=10,force=0,defense=0,vit=0,PtA=0,valeur = 0,PA_max=0):
 
         # Statistique de base
         self.lp = lp
@@ -17,7 +17,6 @@ class Acteur:
         self.x = x
         self.y = y
         self.PA = PtA
-        self.etat = etat
         self.etat_jeu = "menu"
         self.hit = 0
         self.valeur = valeur
@@ -46,7 +45,7 @@ class Acteur:
         ## PA ==  Points d'action
         ### position du joueur dans l'ATB
         ## Vitesse joueur
-        self.dureetour = 15
+        
         # etat du joueur dans le gameplay
 
 
@@ -56,10 +55,24 @@ class Acteur:
         self.wait = False
         self.cout_deplacement = 300
         self.cout_deplacement_diag = sqrt(2) * self.cout_deplacement  ## cout en PA par case de deplacement
-        self.chrono_action = 0
-        self.Stop_Time_Active = False
 
+        #### Tout les temps et chronos ####
 
+        ### Dictionnaire des états possibles :
+        # "cooldown" : temps de recharge avant de pouvoir agir 
+        # "jouable" : temps durant lequel le joueur peut agir
+        # "casting" : temps durant lequel l'action est en cours d'execution
+        # "action" : temps durant lequel l'action s'execute
+        # "mort" : acteur mort, plus d'action possible
+        self.Etats = [{"nom" : "cooldown", "modif" : 1, "tps_max" : 1,"long" : 1/6, "origine" : lenATB},
+                      {"nom" : "jouable", "modif" : 1, "tps_max" : 10, "long" : 4/6, "origine" : 5*lenATB/6},
+                      {"nom" : "casting", "modif" : 1, "tps_max" : 100, "long" : 1/6, "origine" : lenATB/6}] #,"trigger" : self.casting()}]
+        self.index_etat = 0
+        self.etat = self.Etats[self.index_etat]
+
+        self.chrono = 0
+        
+        
 
         ## Position sur l'échiquier
 
@@ -76,6 +89,17 @@ class Acteur:
     
 ############# Etat #####################################
 
+    def Etat_suivant(self):
+        if self.chrono >= self.etat["tps_max"]  :
+            self.chrono = 0
+            next_index = self.index_etat +1
+            if next_index >= len(self.Etats):
+                next_index = 0
+            self.index_etat = next_index
+            self.etat = self.Etats[next_index]
+                
+
+            
 
     def mort(self):
         if self.lp <=0 :
@@ -110,14 +134,23 @@ class Acteur:
 ################ Temporel #####################################
 
     def calcul_temps_ref(self,dt):
-        if not self.Stop_Time_Active:
-            self.chrono_action += dt
-        if self.chrono_action >= self.dureetour:
-            self.chrono_action = 0
+        
+        
+        ## Si un signal stop, le temps de l'acteur s'arrête
+        if self.wait:
+            pass
+        ## Si on est durant le cooldown
+        else:
+            self.chrono += dt * self.etat["modif"] #(*une variable de contingence)
+        self.Etat_suivant()
+
+
+
+
 
     def ordonnee_indicateur(self):
-        longueur = lenATB * self.chrono_action / self.dureetour
-        y = (-1) * (longueur - lenATB)
+        longueur = self.etat["long"] * lenATB * self.chrono / self.etat["tps_max"]
+        y = self.etat["origine"] + (-1) * (longueur - self.etat["long"])
         
         self.rect_indicateur.y = y
 
