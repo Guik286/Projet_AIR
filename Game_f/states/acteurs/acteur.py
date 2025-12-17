@@ -101,6 +101,12 @@ class Acteur:
 
             
 
+    def reset_to_cooldown(self):
+        self.index_etat = 0
+        self.etat = self.Etats[self.index_etat]
+        self.chrono = 0
+        self.wait = False
+
     def mort(self):
         if self.lp <=0 :
             self.lp = 0
@@ -149,6 +155,7 @@ class Acteur:
 
 
     def ordonnee_indicateur(self):
+        
         longueur = self.etat["long"] * lenATB * self.chrono / self.etat["tps_max"]
         y = self.etat["origine"] + (-1) * (longueur - self.etat["long"])
         

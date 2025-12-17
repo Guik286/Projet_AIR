@@ -8,7 +8,7 @@ from math import sqrt
 
  
 class Joueur(Acteur):
-    def __init__(self,x=0,y=0,lp = 300,force = 0,defense = 0,vit = 0,PtA = 0, PA_max = 100):
+    def __init__(self,x=0,y=0,lp = 300,force = 0,defense = 0,vit = 0,PtA = 0, PA_max = 1500):
         super(Joueur,self).__init__(x,y,lp,force,defense,vit,PtA,PA_max)
         self.experience = 0 
         self.curseur = pygame.Rect((self.x,self.y),(taillecase,taillecase))
@@ -29,7 +29,7 @@ class Joueur(Acteur):
         self.etat_precedent = self.Etats[self.index_etat]
         self.etat = self.etat_precedent
         
-        self.Etats[1]["modif"] = 5
+        #self.Etats[1]["modif"] = 5
 
         ## Valeur dans la matrice 
 
@@ -48,7 +48,7 @@ class Joueur(Acteur):
 
         if self.etat_precedent["nom"] != "casting":
             
-            self.PA = self.chrono * 100
+            self.PA = self.chrono * 150
         else:
             pass
         self.stop_before_casting()

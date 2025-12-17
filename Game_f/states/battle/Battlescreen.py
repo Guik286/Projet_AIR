@@ -169,7 +169,7 @@ class Level(BaseState):
 
             
 
-            if self.Ennemis[i].etat == "jouable":
+            if self.Ennemis[i].etat["nom"] == "jouable":
                 
                 old_x = self.Ennemis[i].x
                 old_y = self.Ennemis[i].y
@@ -177,9 +177,11 @@ class Level(BaseState):
                 
                 self.Ennemis[i].IA_ennemi(self.player,self.grid)
                 self.deplacer_grid(old_x,old_y,self.Ennemis[i])
+                
                 #print_grille(self.grid)
 
             self.Ennemis[i].ordonnee_indicateur()
+            
 
         ### Sortie vers Fin
         self.Fin_Joueur()
@@ -399,27 +401,21 @@ class Level(BaseState):
                     self.grid[pos_i][pos_j] = None
                     self.grid[col][row] = self.player
                     self.player.deplacement_acteur(col,row)
+                    
+                    
+                    self.player.reset_to_cooldown()
+                    
+                    self.player.rect_indicateur.y = lenATB
+
+                    
                     ## On met à jour les coordonnées du joueur  
 
                     ## On déplace le sprite du joueur
 
 
 
-
-
-
-
-                    #pos_J = pygame.math.Vector2(self.player.rect.center)
-                    #
-                    #self.player.x,self.player.y = pos
-                    #print(self.player.x,self.player.y)
-                    #movement = pos - pos_J
-                    #self.player.rect.move_ip(movement)
-                    #self.player
-                    self.player.chrono_action = 0
-                    self.player.etat = "cooldown"
                     self.player.etat_jeu = "menu"
-                    self.player.wait = False
+                    
                     for i in range(0,len(self.Ennemis),1):
                         self.Ennemis[i].wait = False
                 elif self.grid[int((pos.x - 720) // taillecase)][int(pos.y // taillecase)] is not "possible":

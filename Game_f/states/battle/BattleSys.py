@@ -51,7 +51,8 @@ class control_joueur:
 
             elif player.etat_jeu in ["attaque","map"]:
                 player.etat_jeu = "menu"
-                player.wait = False
+                if player.etat["nom"] == "jouable":
+                    player.wait = False
                 for i in range(0,len(acteur),1):
                     acteur[i].wait = False
             
@@ -85,6 +86,7 @@ class control_joueur:
             ### Commande Cible
             ### Quand on a selectionné une attaque, on selectionne une cible
             elif player.etat_jeu == "cible":
+                print(player.PA)
 
                 ## Flag PA :
                 if not logique_de_combat(player,cible,index).flag_PA:
