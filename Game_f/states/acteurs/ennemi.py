@@ -18,6 +18,11 @@ class Ennemi(Acteur):
         self.image_hit()
         self.rect_img = self.image.get_rect()
         self.rect_img.center = self.rect.center
+        self.action = 0
+        self.action_threshold = 0
+        self.etat_precedent = self.etat
+        self.threshold_generated = False
+        self.Etats[1]["modif"] = 5
 
 
     def image_hit(self):
@@ -37,6 +42,16 @@ class Ennemi(Acteur):
         self.calcul_temps_ref(dt)
         self.PA = self.chrono * 150
 
+        if self.etat["nom"] == "cooldown" and not self.threshold_generated:
+            self.action_threshold = rd.randint(5,9) * self.PA_max / 10
+            self.threshold_generated = True
+        elif self.etat["nom"] != "cooldown":
+            self.threshold_generated = False
+
+        #if self.chrono == 0 and self.etat["nom"] == "cooldown":
+            ## on calcule une borne de PA à partir de laquellle il agit
+            
+
 
 
 
@@ -48,7 +63,7 @@ class Ennemi(Acteur):
         
 
 
-        if self.PA >= self.cout_deplacement:
+        while self.PA >= self.cout_deplacement:
             x = self.x
             y = self.y
 
@@ -60,7 +75,7 @@ class Ennemi(Acteur):
                 self.y += 1
             elif self.y > cible.y and grid[self.x][self.y -1] is None:
                 self.y -= 1
-            self.reset_to_cooldown()
+            
             
 
             
@@ -75,22 +90,20 @@ class Ennemi(Acteur):
                 self.PA -= self.cout_deplacement
             
             print(f"L'ennemi se déplace en ({self.x},{self.y})")
-            
+        self.reset_to_cooldown()
 
             
             
     
     
 
-    def Action_ennemi(self,cible):
+    def Attaque_ennemi(self,cible):
         # Exemple d'action simple : attaquer la cible
         if self.PA >= 500:
             damage = max(0, self.force - cible.defense)
             cible.lp -= damage
             print(f"L'ennemi attaque et inflige {damage} points de dégâts !")
             print(cible.lp)
-            #print(f"{cible} a pris 1 point de dégats")
-            #print(f"{cible} a {cible.lp}")
 
  
     
@@ -100,8 +113,8 @@ class Ennemi(Acteur):
         
 
         ## On détermine une limite à partir de laquelle l'ennemi agit
-        limite = self.PA_max*rd.randint(1000,5000)/5000
-        if self.PA < limite:
+        #limite = self.PA_max*rd.randint(1000,5000)/5000
+        if self.PA < self.action_threshold:
             pass
         else:
         
@@ -113,7 +126,7 @@ class Ennemi(Acteur):
 
             else:
 
-                self.Action_ennemi(cible)
+                self.Attaque_ennemi(cible)
                 self.wait = False
                 self.etat = self.Etats[self.index_etat+1]
             

@@ -59,6 +59,21 @@ class Level(BaseState):
 
         self.ennemi2 = Ennemi(3,16)
 
+
+        ## Test mur/obstacle
+
+        self.mur1 = Acteur(0,2)
+        self.mur2 = Acteur(1,2)
+        self.mur3 = Acteur(2,2)
+        self.mur4 = Acteur(2,1)
+        self.mur5 = Acteur(2,0)
+        self.mur6 = Acteur(1,0)
+        self.mur7 = Acteur(1,1)
+        self.mur8 = Acteur(0,1)
+
+        self.obstacle = [self.mur1,self.mur2,self.mur3,self.mur4,self.mur5,self.mur6,self.mur7,self.mur8]
+        
+
         self.ref = Acteur(0,0)
         self.Ennemis = [self.ennemi,self.ennemi2]
 
@@ -67,6 +82,8 @@ class Level(BaseState):
         self.Index_cible = 0
 
         self.couleur_E = [pygame.Color("purple"),pygame.Color("cyan"),pygame.Color("darkred")]
+
+        
         
         ## Cout des actions 
         self.cout_deplacement = 300 ## PlayTEST
@@ -85,6 +102,9 @@ class Level(BaseState):
 
     def position_grille(self):
         self.grid[self.player.x][self.player.y] = self.player
+
+        for mur in self.obstacle:
+            self.grid[mur.x][mur.y] = mur
         
         for ennemi in self.Ennemis:
             self.grid[ennemi.x][ennemi.y] = ennemi
@@ -170,7 +190,8 @@ class Level(BaseState):
             
 
             if self.Ennemis[i].etat["nom"] == "jouable":
-                
+
+                    
                 old_x = self.Ennemis[i].x
                 old_y = self.Ennemis[i].y
                 
@@ -289,11 +310,6 @@ class Level(BaseState):
         self.ref.ordonnee_indicateur()
         pygame.draw.rect(surface,pygame.Color("black"),self.ref.rect_indicateur) 
         self.UI(self.player).lifebar(surface)
-
-        
-        
-
-
         ## Affichage ou non du Menu d'attaque
         
         if self.player.etat_jeu == "attaque" or self.player.etat_jeu == "cible":
@@ -303,6 +319,17 @@ class Level(BaseState):
         if self.player.etat_jeu == "cible":
             for index, ennemi in enumerate(self.Ennemis):
                 pygame.draw.rect(surface,self.selection_ennemi(self.Index_cible),self.Ennemis[self.Index_cible].rect,3)
+
+        ### Affichage des obstacles : 
+        
+        if self.obstacle != []:
+            for i in range(0,len(self.obstacle),1):
+
+                pygame.draw.rect(surface,pygame.Color("brown"),self.obstacle[i].rect)
+                self.UI(self.obstacle[i]).lifebar(surface)
+
+
+
 
 
         ### Affichage des options du menu
