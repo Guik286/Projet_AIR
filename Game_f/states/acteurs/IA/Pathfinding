@@ -1,0 +1,37 @@
+
+
+
+## Prend deux position et une map et retourne un chemin
+class Pathfinding:
+    def __init__(self,grid,start,end):
+        self.grid = grid
+        self.start = start
+
+        self.end = end
+        self.neighbors = []
+		
+
+
+        
+		
+    def update_neighbors(self):
+        self.neighbors = []
+        if self.row < self.total_rows - 1 and self.grid[self.row + 1][self.col] is None: # DOWN
+        	self.neighbors.append(self.grid[self.row + 1][self.col]
+        elif self.row > 0 and self.grid[self.row - 1][self.col] is None: # UP
+        	self.neighbors.append(self.grid[self.row - 1][self.col]      
+        elif self.col < self.total_rows - 1 and not self.grid[self.row][self.col + 1].is_barrier(): # RIGHT
+        	self.neighbors.append(self.grid[self.row][self.col + 1]      
+        elif self.col > 0 and self.grid[self.row][self.col - 1] is None: # LEFT
+        	self.neighbors.append(self.grid[self.row][self.col - 1]      
+        elif self.row < self.total_rows - 1 and self.col < self.total_rows - 1 and self.grid[self.row + 1][self.col + 1] is None: # DOWN RIGHT
+        	self.neighbors.append(self.grid[self.row + 1][self.col + 1])
+
+        elif self.row < self.total_rows - 1 and self.col > 0 and self.grid[self.row + 1][self.col - 1] is None: # DOWN LEFT
+        	self.neighbors.append(self.grid[self.row + 1][self.col - 1])
+
+        elif self.row > 0 and self.col < self.total_rows - 1 and self.grid[self.row - 1][self.col + 1] is None: # UP RIGHT
+        	self.neighbors.append(self.grid[self.row - 1][self.col + 1])
+
+        elif self.row > 0 and self.col > 0 and self.grid[self.row - 1][self.col - 1] is None: # UP LEFT
+        	self.neighbors.append(self.grid[self.row - 1][self.col - 1])

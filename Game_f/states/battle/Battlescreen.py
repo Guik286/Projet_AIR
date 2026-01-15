@@ -62,12 +62,12 @@ class Level(BaseState):
 
         ## Test mur/obstacle
 
-        self.mur1 = Acteur(0,2)
-        self.mur2 = Acteur(1,2)
-        self.mur3 = Acteur(2,2)
-        self.mur4 = Acteur(2,1)
-        self.mur5 = Acteur(2,0)
-        self.mur6 = Acteur(1,0)
+        self.mur1 = Acteur(0,3)
+        self.mur2 = Acteur(1,3)
+        self.mur3 = Acteur(2,3)
+        self.mur4 = Acteur(3,3)
+        self.mur5 = Acteur(3,2)
+        self.mur6 = Acteur(3,0)
         self.mur7 = Acteur(1,1)
         self.mur8 = Acteur(0,1)
 
@@ -374,21 +374,24 @@ class Level(BaseState):
                 self.quit = True
 
             elif event.key == pygame.K_RETURN:
-                ## Deplacer grid pour eventuel Knockback
-                ##Anciennes coordonnées
-                x = []
-                y = []
+                if self.player.PA >= 1/2 * self.player.PA_max:
+                    ## Deplacer grid pour eventuel Knockback
+                    ##Anciennes coordonnées
+                    x = []
+                    y = []
 
-                for i in range(0,len(self.Ennemis),1):
-                    x.append(self.Ennemis[i].x)
-                    y.append(self.Ennemis[i].y)
+                    for i in range(0,len(self.Ennemis),1):
+                        x.append(self.Ennemis[i].x)
+                        y.append(self.Ennemis[i].y)
 
-                
-                self.control.logique_valider(event,self.player,self.Ennemis[self.Index_cible],cout_total,self.active_index,self.Ennemis,self.player.Attaque_index)
-                
-                ## Application du deplacement dans la matrice
-                for i in range(0,len(self.Ennemis),1):
-                    self.deplacer_grid(x[i],y[i],self.Ennemis[i])
+
+                    self.control.logique_valider(event,self.player,self.Ennemis[self.Index_cible],cout_total,self.active_index,self.Ennemis,self.player.Attaque_index)
+
+                    ## Application du deplacement dans la matrice
+                    for i in range(0,len(self.Ennemis),1):
+                        self.deplacer_grid(x[i],y[i],self.Ennemis[i])
+                else:
+                    print("Parade !")
                 
         ## On repart en arriere
             elif event.key == pygame.K_BACKSPACE:
