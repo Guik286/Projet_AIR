@@ -1,16 +1,18 @@
 import pygame
-from Game_f.states.base import BaseState
-from Game_f.states.acteurs.acteur import Acteur
-from Game_f.states.acteurs.Joueur.joueur import Joueur
-from Game_f.states.acteurs.ennemi import Ennemi
+from Game_f.graphisme.states.base import BaseState
+from Game_f.graphisme.states.acteurs.acteur import Acteur
+from Game_f.graphisme.states.acteurs.Joueur.joueur import Joueur
+from Game_f.graphisme.states.acteurs.ennemi import Ennemi
+
+from Game_f.mechs.logique.LogiqueCombat.FinCombat import *
 from GI import GraphicInterface
 
 import random as rd
 
 
 from Data.settings import *
-from Game_f.states.battle.ATB import *
-from Game_f.states.battle.UI import UI
+from Game_f.graphisme.states.battle.ATB import *
+from Game_f.graphisme.states.battle.UI import UI
 from .BattleSys import control_joueur, logique_de_combat
 #from .battlelogic import Matrice_Bagarre
 
@@ -210,7 +212,6 @@ class Level(BaseState):
         self.Ennemi_out()
         ### Sortie vers suite.
         self.Victoire()
-
 
         
     ################################################################## GRAPHIQUES #################################################################

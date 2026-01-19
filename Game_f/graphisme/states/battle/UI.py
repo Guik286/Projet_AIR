@@ -1,7 +1,7 @@
 import pygame
 
 
-from Game_f.states.acteurs.acteur import Acteur
+from Game_f.graphisme.states.acteurs.acteur import Acteur
 
 class UI:
     def __init__(self,acteur):

@@ -64,7 +64,7 @@ class Acteur:
         # "action" : temps durant lequel l'action s'execute
         # "mort" : acteur mort, plus d'action possible
         self.Etats = [{"nom" : "cooldown", "modif" : 1, "tps_max" : 2,"long" : 1/6, "origine" : lenATB},
-                      {"nom" : "jouable", "modif" : 1, "tps_max" : 10, "long" : 4/6, "origine" : 5*lenATB/6},
+                      {"nom" : "jouable", "modif" : 3, "tps_max" : 10, "long" : 4/6, "origine" : 5*lenATB/6},
                       {"nom" : "casting", "modif" : 1, "tps_max" : 1, "long" : 1/6, "origine" : lenATB/6}] #,"trigger" : self.casting()}]
         self.index_etat = 0
         self.Etat_mort = [{"nom" : "mort", "modif" : 0, "tps_max" : 0,"long" : 0, "origine" : 0}]
@@ -155,11 +155,13 @@ class Acteur:
 
 
     def ordonnee_indicateur(self):
-        
+
+
+        print(self.etat)
         longueur = self.etat["long"] * lenATB * self.chrono / self.etat["tps_max"]
         y = self.etat["origine"] + (-1) * (longueur - self.etat["long"])
-        
         self.rect_indicateur.y = y
+
 
 
 

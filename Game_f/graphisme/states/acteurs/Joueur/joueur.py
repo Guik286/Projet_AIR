@@ -8,7 +8,7 @@ from math import sqrt
 
  
 class Joueur(Acteur):
-    def __init__(self,x=0,y=0,lp = 300,force = 0,defense = 0,vit = 0,PtA = 0, PA_max = 1500):
+    def __init__(self,x=0,y=0,lp = 1,force = 0,defense = 0,vit = 0,PtA = 0, PA_max = 1500):
         super(Joueur,self).__init__(x,y,lp,force,defense,vit,PtA,PA_max)
         self.experience = 0 
         self.curseur = pygame.Rect((self.x,self.y),(taillecase,taillecase))
