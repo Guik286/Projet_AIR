@@ -1,5 +1,5 @@
 import pygame
-from GI import GraphicInterface
+from Game_f.UI.GI import GraphicInterface
 from Game_f.graphisme.states.base import BaseState
 from Game_f.graphisme.states.battle.Battlescreen import Level
 

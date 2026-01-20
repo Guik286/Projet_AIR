@@ -5,7 +5,7 @@ from Game_f.graphisme.states.acteurs.Joueur.joueur import Joueur
 from Game_f.graphisme.states.acteurs.ennemi import Ennemi
 
 from Game_f.mechs.logique.LogiqueCombat.FinCombat import *
-from GI import GraphicInterface
+from Game_f.UI.GI import GraphicInterface
 
 import random as rd
 

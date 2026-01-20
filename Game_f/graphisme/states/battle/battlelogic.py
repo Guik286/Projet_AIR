@@ -1,10 +1,7 @@
-import pygame
+from Game_f.graphisme.states.acteurs.acteur import Acteur
+from Game_f.graphisme.states.acteurs.Joueur.joueur import Joueur
+from Game_f.graphisme.states.acteurs.ennemi import Ennemi
 
-from Game_f.states.base import BaseState
-from Game_f.states.acteurs.acteur import Acteur
-from Game_f.states.acteurs.Joueur.joueur import Joueur
-from Game_f.states.acteurs.ennemi import Ennemi
-from GI import GraphicInterface
 
 import random as rd
 

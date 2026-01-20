@@ -1,6 +1,6 @@
 import pygame
 from Game_f.graphisme.states.base import BaseState
-from GI import GraphicInterface
+from Game_f.UI.GI import GraphicInterface
 
 class Options(BaseState):
     def __init__(self):

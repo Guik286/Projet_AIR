@@ -15,6 +15,7 @@ class GrilleCombat:
         self.hauteur = hauteur
         self.grid = [[Point2D(x, y) for x in range(largeur)] for y in range(hauteur)]
         self.grid[0][0].initialisation(self)  # Initialisation des éléments à None
+        print(self.largeur,self.hauteur)
 
     ### Méthode pour placer un élément sur la grille
     def placer_element(self, element):
@@ -122,63 +123,6 @@ class GrilleCombat:
 
 
 
-
-
-
-matrice = GrilleCombat(20,18)
-D = Point2D(0,0,"D")
-A = Point2D(5,0,"A")
-M = Point2D(1,0,"Mur")
-M2 = Point2D(1,1,"Mur2")
-M3 = Point2D(1,2,"Mur3")
-M4 = Point2D(1,3,"Mur4")
-M5 = Point2D(1,4,"Mur5")
-
-M6 = Point2D(3,4,"Mur6")
-M7 = Point2D(3,3,"Mur7")
-M8 = Point2D(3,2,"Mur8")
-M9 = Point2D(3,1,"Mur9")
-
-A1 = Acteur(4,0,"A1","Acteur 1")
-
-matrice.placer_element(A1)
-
-print(matrice.grid[0][4].element.nom)
-
-matrice.deplacer_element(A1,2,2)
-print(matrice.grid[2][2].element.nom)
-
-
-matrice.placer_element(D)
-matrice.placer_element(A)
-matrice.placer_element(M)
-matrice.placer_element(M2)
-matrice.placer_element(M3)
-matrice.placer_element(M4)
-matrice.placer_element(M5)
-matrice.placer_element(M6)
-matrice.placer_element(M7)
-matrice.placer_element(M8)
-matrice.placer_element(M9)
-
-
-
-
-
-matrice.afficher_grille()
-
-path = matrice.pathfinding(D,A)
-nomchemin = []
-for point in path:
-    if point.element is None:
-        nomchemin.append(point.nom)
-    else:
-        nomchemin.append(point.element.nom)
-
-print(nomchemin)
-
-matrice.draw_path(path if path else [])
-print(path)
 
 
 
