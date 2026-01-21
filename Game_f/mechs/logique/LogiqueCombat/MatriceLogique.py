@@ -143,10 +143,10 @@ A1 = Acteur(4,0,"A1","Acteur 1")
 
 matrice.placer_element(A1)
 
-print(matrice.grid[0][4].element.nom)
+
 
 matrice.deplacer_element(A1,2,2)
-print(matrice.grid[2][2].element.nom)
+
 
 
 matrice.placer_element(D)

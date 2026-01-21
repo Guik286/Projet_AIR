@@ -8,6 +8,8 @@ class Point2D:
         self.x = x
         self.y = y
         self.nom = nom
+        if self.nom == 'Point':
+            self.nom = f"Point ({self.x},{self.y})"
         self.element = None  # Élément placé sur ce point
         self.voisins = [[None for _ in range(3)] for _ in range(3)]  # Matrice des voisins
         self.cout_deplacement = [[1.4,1,1.4],[1,0,1],[1.4,1,1.4]]  # Coût de déplacement vers chaque voisin
@@ -17,6 +19,14 @@ class Point2D:
     def initialisation(self, grille):
         self.initialisee = True
         self.get_voisins(grille)
+
+    def __eq__(self, other):
+        if not isinstance(other, Point2D):
+            return NotImplemented
+        return (self.x, self.y) == (other.x, other.y)
+
+    def __hash__(self):
+        return hash((self.x, self.y))
 
     def is_occupied(self):
         return self.element is not None

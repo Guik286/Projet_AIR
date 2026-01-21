@@ -4,13 +4,13 @@ import sys
 from BrouillonBattleSys.Game import Game
 
 
-from BrouillonBattleSys.settingsBrouillonBS import length, width
+from BrouillonBattleSys.settingsBrouillonBS import length, height
 from BrouillonBattleSys.Battle import Battle
 
 
 pygame.init()
 
-screen = pygame.display.set_mode((length, width))
+screen = pygame.display.set_mode((length, height))
 states = {"Battle" : Battle()}
 
 game = Game( screen, states, "Battle")
