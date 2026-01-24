@@ -1,5 +1,8 @@
 #### Classes des points et de la matrice de combat logique ####
 import pygame
+import sys
+import os
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.dirname(__file__))))
 from Data.settings import *
 
 class Point2D:

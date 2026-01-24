@@ -1,11 +1,11 @@
 import pygame
 import sys
 
-from BrouillonBattleSys.Game import Game
+from Game import Game
 
 
-from BrouillonBattleSys.settingsBrouillonBS import length, height
-from BrouillonBattleSys.Battle import Battle
+from settingsBrouillonBS import length, height
+from BrouillonBattleSys.tests.BattleState.Battlemain import Battle
 
 
 pygame.init()

@@ -1,0 +1,14 @@
+A charger dans init
+
+
+Map (Objet)
+
+Acteur (Ennemis puis joueur)
+
+Enclenche le chrono !
+
+déroulée
+
+
+init : Base de données (caract, graphisme)
+

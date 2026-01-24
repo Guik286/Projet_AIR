@@ -1,6 +1,9 @@
 
 #### Description temporaire des points et de la matrice de combat logique
 import pygame
+import sys
+import os
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.dirname(__file__))))
 from Data.settings import *
 from math import sqrt
 from Game_f.graphisme.states.acteurs.acteur import Acteur
@@ -78,8 +81,11 @@ class GrilleCombat:
         g_score[start_cell] = 0
         f_score = {spot: float("inf") for row in self.grid for spot in row}
         f_score[start_cell] = sqrt((start_cell.x - end_cell.x) ** 2 + (start_cell.y - end_cell.y) ** 2)
+        max_iterations = 1000  # Prevent infinite loop
+        iteration_count = 0
 
-        while not EnsOuvert.empty():
+        while not EnsOuvert.empty() and iteration_count < max_iterations:
+            iteration_count += 1
             current = EnsOuvert.get()[2]
             # si on atteint le point d'arrive, on construit le chemin
             if current.x == end_cell.x and current.y == end_cell.y:
@@ -110,6 +116,7 @@ class GrilleCombat:
                             EnsOuvert.put((f_score[voisin], compte, voisin))
 
         print("Pathfinding terminé") 
+        
 
     
     def draw_path(self, path):
