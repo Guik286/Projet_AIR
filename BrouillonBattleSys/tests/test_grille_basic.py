@@ -1,5 +1,5 @@
-from BrouillonBattleSys.tests.BattleState.EssaiMatriceLogique import GrilleCombat
-from BrouillonBattleSys.tests.BattleState.EssaiPoint2D import Point2D
+from BrouillonBattleSys.tests.BattleState.Map.MapLogique.MatriceLogique import GrilleCombat
+from BrouillonBattleSys.tests.BattleState.Entites.EntitesLogique.Point2D import Point2D
 
 
 def run_tests():

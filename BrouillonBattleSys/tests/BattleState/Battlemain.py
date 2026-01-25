@@ -1,13 +1,19 @@
 import pygame
-from BrouillonBattleSys.tests.BattleState.EssaiPoint2D import Point2D, objet2D
-from BrouillonBattleSys.tests.BattleState.EssaiMatriceLogique import GrilleCombat
+from BrouillonBattleSys.tests.BattleState.Entites.EntitesLogique.Point2D import Point2D
+from BrouillonBattleSys.tests.BattleState.Map.MapLogique.MatriceLogique import GrilleCombat
 from settingsBrouillonBS import *
 from random import randint as rd
+
+from KeysManager import KeysManager
 
 class Battle:
     def __init__(self):
 
         # Objectif : Encapsuler tous les init dans un système de sauvegarde
+
+        ## Controle du joueur
+        self.controle = KeysManager()
+        
 
         ### Charger Map 
 
@@ -32,7 +38,7 @@ class Battle:
         #    self.Murs.append(Point2D(w[i],z[i],f'Mur{5+i}'))
         #    self.MursRect.append(pygame.Rect(self.Murs[5+i].x*taillecol,self.Murs[5+i].y*taillerow,taillecol,taillerow))
         #### Pour les gros test
-        for i in range(1):
+        for i in range(4):
             x,y = rd(1,8),rd(1,8)
             self.Murs.append(Point2D(x,y,f'Mur{i}'))
             self.MursRect.append(pygame.Rect(self.Murs[i].x*taillecol,self.Murs[i].y*taillerow,taillecol,taillerow))
@@ -43,7 +49,7 @@ class Battle:
 
 
         ######### Acteurs logiques ##################
-        self.EnnemiLogique = Point2D(9,9)
+        self.EnnemiLogique = Point2D(9,9,"Ennemi")
         self.grillelogique.placer_element(self.EnnemiLogique)
 
         self.JoueurLogique = Point2D(0,0,"Joueur")
@@ -74,7 +80,9 @@ class Battle:
 
 
         self.indicateur_path = False
-        #self.grillelogique.afficher_grille()
+        self.grillelogique.print_element(1,1)
+        
+
 
 
         
@@ -94,10 +102,10 @@ class Battle:
             if event.key == pygame.K_ESCAPE:
                 pygame.quit()
                 exit()
-            elif event.key == pygame.K_SPACE:
-
+            elif self.controle.is_key_down("start"):
+                
                 self.path = self.grillelogique.pathfinding(self.JoueurLogique,self.EnnemiLogique)
-                print(len(self.path))
+
                 if self.path is None:
                     print("Pas de chemin trouvé vers l'ennemi.")
                     self.indicateur_path = False
@@ -109,6 +117,8 @@ class Battle:
                     self.pathRect.append(pygame.Rect(point.x * taillecol, point.y * taillerow, taillecol, taillerow))
                 if len(self.path) != 2:
                     self.indicateur_path = True
+                self.controle.input = False
+
                     
 
 
@@ -121,12 +131,12 @@ class Battle:
     ### Horloge, fournira l'ATB et autres systemes temporels ###
     def horloge(self, dt):
         self.temps += dt
+        self.grillelogique.print_element(1,1)
         if self.indicateur_path == True:
             #self.grillelogique.afficher_grille()
             self.k += 1 
             longueur_chemin = len(self.path)
             case_actuelle = self.path[longueur_chemin -min(self.k,longueur_chemin)]
-            print(case_actuelle.x,case_actuelle.y)
             x = case_actuelle.x
             y = case_actuelle.y
             print(f"le temps self.temps est :{self.temps}")
@@ -137,6 +147,10 @@ class Battle:
             except ValueError as e:
                 print(f"Déplacement impossible vers ({x},{y}) : {e}")
                 print(f"L'indice d'évolution sur le chemin est :{self.k}")
+            print("élément en 1,1")
+            self.grillelogique.print_element(1,1)
+            print("élément en 9,9")
+            self.grillelogique.print_element(9,9)
            
 
             # Debug: afficher état du chemin et de la grille après déplacement

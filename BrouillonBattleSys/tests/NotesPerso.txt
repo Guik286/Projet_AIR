@@ -1,0 +1,4 @@
+Les point sont toujours traités comme de éléments de la Map, il faut retirer un élément de la map et le replacer pour le déplacer
+
+Option 1 : on reformule les fonctions de la map logique
+Option 2 : on fera garder à l'élément ses propriétés à coup de sauvegarde sur lui mm, cela peut incluer les éléments graphiques (frame d'animation en cours, horloge..)

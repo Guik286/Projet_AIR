@@ -9,9 +9,14 @@ from BrouillonBattleSys.tests.BattleState.Battlemain import Battle
 
 
 pygame.init()
-
+### Definition de l'image
 screen = pygame.display.set_mode((length, height))
+
+
+## Dictionnaire des écrans
 states = {"Battle" : Battle()}
+
+
 
 game = Game( screen, states, "Battle")
 game.run()

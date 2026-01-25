@@ -11,6 +11,14 @@ from Game_f.mechs.logique.LogiqueCombat.Point2D import Point2D
 from queue import PriorityQueue
 
 
+#### Tache : Proposer un support pour définir la position des objets, tracer les chemins à emprunter pour les animations
+
+#### Fonctions :
+## Creer un element (placer)
+## Detruire un élément (retirer)
+## Deplacer un élément [detruire puis creer]
+## Path finding (trouver un chemin)
+
 class GrilleCombat:
     ### Classe de la grille de combat logique
     def __init__(self, largeur, hauteur):
@@ -18,6 +26,16 @@ class GrilleCombat:
         self.hauteur = hauteur
         self.grid = [[Point2D(x, y) for x in range(largeur)] for y in range(hauteur)]
         self.grid[0][0].initialisation(self)  # Initialisation des éléments à None
+
+
+    ## Element existe?
+
+    def print_element(self, x, y):
+        if self.grid[y][x].element is not None:
+            print(self.grid[y][x].element.nom)
+        else:
+            print("Il n'y a aucun élément ici")
+
 
 
     ### Méthode pour placer un élément sur la grille
@@ -32,9 +50,7 @@ class GrilleCombat:
         else:
             raise ValueError("Coordonnées hors de la grille")
         
-    def print_element(self, x, y):
-        if self.grid[y][x].element is not None:
-            print(self.grid[y][x].element.nom)
+
 
     ### Méthode pour retirer un élément de la grille
     def retirer_element(self, x, y):
@@ -42,21 +58,27 @@ class GrilleCombat:
             self.grid[y][x].element = None
         else:
             raise ValueError("Coordonnées hors de la grille")
+        
+
     ### Méthode pour déplacer un élément d'une position à une autre
     def deplacer_element(self, element, x2, y2):
         if not (0 <= x2 < self.largeur and 0 <= y2 < self.hauteur):
             raise ValueError("Coordonnées hors de la grille")
         if not self.grid[y2][x2].element:
-            if element:
-                self.retirer_element(element.x, element.y)
-                element.x = x2
-                element.y = y2
-                self.placer_element(element)
-            else:
-                raise ValueError("L'élément à déplacer n'existe pas")
+            ## On peut garder en mémoire les différentes modifications apportés à l'élément ou duppliquer l'élément et effacer l'ancien. 
+            ## On duplique l'élément à la nouvelle position (permet de garder l'état de l'élément en mémoire sur le script)
+            self.grid[y2][x2].element = self.grid[element.y][element.x].element
+            ## On efface l'ancien
+            self.grid[element.y][element.x].element = None
+            ## On met à jour les coordonnées de l'objet "élément"
+            element.x = x2
+            element.y = y2
+
         else:
             raise ValueError("La position cible est déjà occupée")
     
+
+    ### On affiche toute la grille logique en l'état
     def afficher_grille(self):
         for row in self.grid:
             ligne = ""
@@ -67,8 +89,9 @@ class GrilleCombat:
                     ligne += "[X]"
             print(ligne)
 
+    ## Algo de pathfinding (à encapsuler ?)
     def pathfinding(self, start, end):
-        # Implémentation simple de l'algorithme A* ou Dijkstra pourrait être ajoutée ici
+        # Implémentation simple de l'algorithme A*
         compte = 0
         EnsOuvert = PriorityQueue()
         # Use the grid cell objects for start/end to keep keys consistent
@@ -114,7 +137,8 @@ class GrilleCombat:
                         if all(voisin != item[2] for item in EnsOuvert.queue):
                             compte += 1
                             EnsOuvert.put((f_score[voisin], compte, voisin))
-
+        if iteration_count == max_iterations:
+            print("Nombre max d'itération atteint")
         print("Pathfinding terminé") 
         
 

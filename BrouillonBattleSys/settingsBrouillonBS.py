@@ -2,7 +2,7 @@
 
 #Parametres ecran pygame
 
-length = 600
+length = 1200
 height = 800
 
 ncol = 50 #Amplitude de x
