@@ -9,7 +9,7 @@ from BrouillonBattleSys.tests.BattleState.Battlemain import Battle
 
 
 pygame.init()
-### Definition de l'image
+### Definition de l'imagel
 screen = pygame.display.set_mode((length, height))
 
 

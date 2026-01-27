@@ -33,38 +33,38 @@ class KeysManager :
                 "L": [pg.K_o],
                 "R": [pg.K_p],
                 "start": [pg.K_i],
-                "select": [pg.K_t],
+                "select": [pg.K_t]
             }
         else:
             self._key_map = key_map
 
-            self.arreturgence = False
+        self.arreturgence = False
+        self._last_pressed_time = 0
 
-    def Gestion_evenement(self):
+    def Gestion_evenement(self,event):
         """Traite un événement de touche entrant."""
 
-        self._last_keys = self._new_keys.copy()
-
-        for event in pg.event.get():
-            if event.type == pg.QUIT:
+        if event.type == pg.QUIT or self.arreturgence:
+            print("shutdown")
+            pg.quit()
+            exit()
+            return
+        if event.type == pg.KEYDOWN:
+            current_time = pg.time.get_ticks()
+            if event.key == pg.K_ESCAPE:
                 self.arreturgence = True
-                print("shutdown")
-                pg.quit()
-                return
-
-            if event.type == pg.KEYDOWN:
-                if event.key == pg.K_ESCAPE:
-                    self.arreturgence = True
-                    
-
+            elif current_time - self._last_pressed_time > 200:
                 for but, keys in self._key_map.items():
                     if event.key in keys:
                         self._set_key(but)
+                self._last_pressed_time = current_time
+            else:
+                print("Pause input")
+        if event.type == pg.KEYUP:
+            for but, keys in self._key_map.items():
+                if event.key in keys:
+                    self._unset_key(but)
 
-            if event.type == pg.KEYUP:
-                for but, keys in self._key_map.items():
-                    if event.key in keys:
-                        self._unset_key(but)
 
     def _set_key(self, button):
         self._new_keys[button] = True

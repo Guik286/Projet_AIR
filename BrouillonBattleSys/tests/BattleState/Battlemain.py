@@ -1,10 +1,14 @@
 import pygame
 from BrouillonBattleSys.tests.BattleState.Entites.EntitesLogique.Point2D import Point2D
+from BrouillonBattleSys.tests.BattleState.Entites.EntitesLogique.Objet2D import objet2D
+
 from BrouillonBattleSys.tests.BattleState.Map.MapLogique.MatriceLogique import GrilleCombat
 from settingsBrouillonBS import *
 from random import randint as rd
 
-from KeysManager import KeysManager
+from BrouillonBattleSys.KeysManager import KeysManager
+
+from BattleSysteme import EffetSpatiaux
 
 class Battle:
     def __init__(self):
@@ -12,7 +16,6 @@ class Battle:
         # Objectif : Encapsuler tous les init dans un système de sauvegarde
 
         ## Controle du joueur
-        self.controle = KeysManager()
         
 
         ### Charger Map 
@@ -49,11 +52,15 @@ class Battle:
 
 
         ######### Acteurs logiques ##################
-        self.EnnemiLogique = Point2D(9,9,"Ennemi")
+        self.EnnemiLogique = objet2D(9,9,"Ennemi","Un Ennemi")
         self.grillelogique.placer_element(self.EnnemiLogique)
 
-        self.JoueurLogique = Point2D(0,0,"Joueur")
+        self.JoueurLogique = Point2D(9,10,"Joueur")
         self.grillelogique.placer_element(self.JoueurLogique)
+
+        ### Systeme de combat 
+
+        self.BatSys = EffetSpatiaux(self.grillelogique)
 
         #### Graphisme
         
@@ -76,11 +83,14 @@ class Battle:
 
         self.temps = 0
         self.screen = pygame.Surface((1000, 800))
+        
+        ## Pathfinding
         self.k = 1
-
-
         self.indicateur_path = False
-        self.grillelogique.print_element(1,1)
+
+
+        print(f"Les points de vie de l'ennemi sont:{self.EnnemiLogique.lp}")
+
         
 
 
@@ -98,26 +108,45 @@ class Battle:
 
     ## Principalement les controles du joueur ##
     def get_event(self, event):
-        if event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_ESCAPE:
-                pygame.quit()
-                exit()
-            elif self.controle.is_key_down("start"):
-                
-                self.path = self.grillelogique.pathfinding(self.JoueurLogique,self.EnnemiLogique)
+        if self.controle.is_new_key_press("start") == True:
+            self.k = 0
+            self.path = self.grillelogique.pathfinding(self.JoueurLogique,self.EnnemiLogique)
+            if self.path is None:
+                print("Pas de chemin trouvé vers l'ennemi.")
+                self.indicateur_path = False
+            self.pathRect = []
+            if len(self.path) == 2:
+                print("L'ennemi est juste à coté")
+                self.indicateur_path = False
+            for point in self.path:
+                self.pathRect.append(pygame.Rect(point.x * taillecol, point.y * taillerow, taillecol, taillerow))
+            if len(self.path) > 2:
+                self.indicateur_path = True
+            self.controle.input = False
 
-                if self.path is None:
-                    print("Pas de chemin trouvé vers l'ennemi.")
-                    self.indicateur_path = False
-                self.pathRect = []
-                if len(self.path) == 2:
-                    print("L'ennemi est juste à coté")
-                    self.indicateur_path = False
-                for point in self.path:
-                    self.pathRect.append(pygame.Rect(point.x * taillecol, point.y * taillerow, taillecol, taillerow))
-                if len(self.path) != 2:
-                    self.indicateur_path = True
-                self.controle.input = False
+        elif self.controle.is_new_key_press("select"):
+            self.pause_joueur = True
+            if self.grillelogique.grid[9][9].element != self.EnnemiLogique:
+
+                self.grillelogique.deplacer_element(self.EnnemiLogique,9,9)
+                self.EnnemiRectangle = pygame.Rect(self.EnnemiLogique.x * taillecol, self.EnnemiLogique.y * taillerow, taillecol, taillerow)
+                
+            else:
+                pass
+
+        elif self.controle.is_new_key_press("A"):
+            self.BatSys.Knockback(self.EnnemiLogique,self.JoueurLogique)
+            self.EnnemiRectangle = pygame.Rect(self.EnnemiLogique.x * taillecol, self.EnnemiLogique.y * taillerow, taillecol, taillerow)
+        elif self.controle.is_key_down("X"):
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                pos = pygame.math.Vector2(pygame.mouse.get_pos())
+                newx = int(pos.x//taillecol)
+                newy = int(pos.y//taillerow)
+                ## On récupère la position du clic de la souris
+                self.grillelogique.deplacer_element(self.JoueurLogique,newx,newy)
+                self.JoueurRectangle = pygame.Rect(self.JoueurLogique.x * taillecol, self.JoueurLogique.y * taillerow, taillecol, taillerow)
+            
+        
 
                     
 
@@ -131,11 +160,11 @@ class Battle:
     ### Horloge, fournira l'ATB et autres systemes temporels ###
     def horloge(self, dt):
         self.temps += dt
-        self.grillelogique.print_element(1,1)
         if self.indicateur_path == True:
             #self.grillelogique.afficher_grille()
             self.k += 1 
             longueur_chemin = len(self.path)
+            print(f"la longueur du chemin est:{longueur_chemin}")
             case_actuelle = self.path[longueur_chemin -min(self.k,longueur_chemin)]
             x = case_actuelle.x
             y = case_actuelle.y
@@ -147,10 +176,8 @@ class Battle:
             except ValueError as e:
                 print(f"Déplacement impossible vers ({x},{y}) : {e}")
                 print(f"L'indice d'évolution sur le chemin est :{self.k}")
-            print("élément en 1,1")
-            self.grillelogique.print_element(1,1)
-            print("élément en 9,9")
-            self.grillelogique.print_element(9,9)
+
+        
            
 
             # Debug: afficher état du chemin et de la grille après déplacement

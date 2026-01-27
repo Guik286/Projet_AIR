@@ -5,14 +5,20 @@
     },
     "activeFile": "BattleMap1.tmx",
     "expandedProjectPaths": [
+        "Data/Map/Tilesets",
+        ".vs",
+        "Data",
+        "Data/Map",
+        "."
     ],
+    "file.lastUsedOpenFilter": "Tous les Fichiers (*)",
     "fileStates": {
         "BattleMap1.tmx": {
             "scale": 1.2161979166666668,
             "selectedLayer": 0,
             "viewCenter": {
                 "x": 479.7738854867028,
-                "y": 319.8492569911353
+                "y": -37.82279131514707
             }
         },
         "Beach Tileset.tsx": {

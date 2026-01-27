@@ -1,4 +1,4 @@
-from KeysManager import *
+from BrouillonBattleSys.KeysManager import *
 
 class controleBattle:
     def __init__(self):
