@@ -26,9 +26,59 @@ class EffetSpatiaux:
         cible.y = newy
         #self.EnnemiRectangle = pygame.Rect(cible.x * taillecol, cible.y * taillerow, taillecol, taillerow)
 
-    def Mouvement(self,point,cible):
-        path = self.matrice.pathfinding(point,cible)
-        
+    def Mouvement(self,point,indice,path):
+        longueur_chemin = len(path) ## Longueur du path a suivre pour l'indexation
+        print(f"la longueur du chemin est:{longueur_chemin}")
+        case_actuelle = path[longueur_chemin -min(indice,longueur_chemin)] ### Pour ordre décroissant et stop a longueur chemin (s'arrête a 1)
+        x = case_actuelle.x
+        y = case_actuelle.y
+        try:
+            self.matrice.deplacer_element(point, x, y)
+            print(f"L'indice d'évolution sur le chemin est :{indice}")
+                
+        except ValueError as e:
+            print(f"Déplacement impossible vers ({x},{y}) : {e}")
+            print(f"L'indice d'évolution sur le chemin est :{indice}")
+
+    
+
+
+
+class GraphObjet:
+    def __init__(self,objet):
+
+            self.objet = objet
+            self.image = objet.image
+            self.rectangle = pygame.Rect(objet.x * taillecol,objet.y * taillerow, taillecol,taillerow)
+
+    def Dessiner_Objet(self,surface):
+            if self.objet.nom == "Joueur":
+                pygame.draw.rect(surface,pygame.Color("Purple"),self.rectangle)
+            else:     
+                pygame.draw.rect(surface,pygame.Color("Yellow"),self.rectangle)
+
+
+
+
+class Gestion_Acteur:
+    def __init__(self,acteur,matrice):
+        self.acteur = acteur
+        self.space = EffetSpatiaux(matrice)
+
+
+    def attaque(self,cible):
+        A = self.acteur.atq
+        D = cible.defense
+
+        if A > D :
+            self.space.Knockback(cible,self.acteur)
+            cible.Recevoir_degats(A-D)
+        else:
+            pass
+            
+
+
+
 
 
         

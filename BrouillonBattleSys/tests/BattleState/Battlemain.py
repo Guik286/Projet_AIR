@@ -1,6 +1,6 @@
 import pygame
 from BrouillonBattleSys.tests.BattleState.Entites.EntitesLogique.Point2D import Point2D
-from BrouillonBattleSys.tests.BattleState.Entites.EntitesLogique.Objet2D import objet2D
+from BrouillonBattleSys.tests.BattleState.Entites.EntitesLogique.Objet2D import objet2D, Acteur
 
 from BrouillonBattleSys.tests.BattleState.Map.MapLogique.MatriceLogique import GrilleCombat
 from settingsBrouillonBS import *
@@ -8,7 +8,7 @@ from random import randint as rd
 
 from BrouillonBattleSys.KeysManager import KeysManager
 
-from BattleSysteme import EffetSpatiaux
+from BattleSysteme import EffetSpatiaux, GraphObjet as GO, Gestion_Acteur as GA
 
 class Battle:
     def __init__(self):
@@ -21,8 +21,19 @@ class Battle:
         ### Charger Map 
 
         ### Ici la map logique ##########################
-
+        ## Hérité de classe
         self.grillelogique = GrilleCombat(nrow,ncol)
+        ### Systeme de combat 
+
+        self.DeplaLogique = EffetSpatiaux(self.grillelogique)
+        self.JoueurLogique = Acteur(9,10,"Joueur","Un Joueur fort et courageux!",100,15,"no_alt",None,5,1)
+        
+        self.grillelogique.placer_element(self.JoueurLogique)
+        self.Relation = GA(self.JoueurLogique,self.grillelogique)
+
+        ### Graphisme : 
+
+        
 
         ### Objets logiques ########################
 
@@ -52,15 +63,12 @@ class Battle:
 
 
         ######### Acteurs logiques ##################
-        self.EnnemiLogique = objet2D(9,9,"Ennemi","Un Ennemi")
+        self.EnnemiLogique = objet2D(9,9,"Ennemi","Un Ennemi",10,1)
         self.grillelogique.placer_element(self.EnnemiLogique)
 
-        self.JoueurLogique = Point2D(9,10,"Joueur")
-        self.grillelogique.placer_element(self.JoueurLogique)
 
-        ### Systeme de combat 
 
-        self.BatSys = EffetSpatiaux(self.grillelogique)
+
 
         #### Graphisme
         
@@ -72,12 +80,17 @@ class Battle:
 
 
 
-        self.JoueurRectangle = pygame.Rect(self.JoueurLogique.x * taillecol, self.JoueurLogique.y * taillerow, taillecol, taillerow)
+        self.JoueurRectangle = GO(self.JoueurLogique).rectangle
+        pygame.Rect(self.JoueurLogique.x * taillecol, self.JoueurLogique.y * taillerow, taillecol, taillerow)
+
+        self.IndMovePlayer = False
+        self.xclick = 0
+        self.yclick = 0
         
 
         
-        self.EnnemiRectangle = pygame.Rect(self.EnnemiLogique.x * taillecol, self.EnnemiLogique.y * taillerow, taillecol, taillerow)
-        
+        self.EnnemiRectangle = GO(self.EnnemiLogique).rectangle
+
 
         ##### Horloge 
 
@@ -109,6 +122,7 @@ class Battle:
     ## Principalement les controles du joueur ##
     def get_event(self, event):
         if self.controle.is_new_key_press("start") == True:
+            self.path = []
             self.k = 0
             self.path = self.grillelogique.pathfinding(self.JoueurLogique,self.EnnemiLogique)
             if self.path is None:
@@ -129,22 +143,35 @@ class Battle:
             if self.grillelogique.grid[9][9].element != self.EnnemiLogique:
 
                 self.grillelogique.deplacer_element(self.EnnemiLogique,9,9)
-                self.EnnemiRectangle = pygame.Rect(self.EnnemiLogique.x * taillecol, self.EnnemiLogique.y * taillerow, taillecol, taillerow)
+                self.EnnemiRectangle = GO(self.EnnemiLogique).rectangle
                 
             else:
                 pass
 
         elif self.controle.is_new_key_press("A"):
-            self.BatSys.Knockback(self.EnnemiLogique,self.JoueurLogique)
-            self.EnnemiRectangle = pygame.Rect(self.EnnemiLogique.x * taillecol, self.EnnemiLogique.y * taillerow, taillecol, taillerow)
+            GA(self.JoueurLogique,self.grillelogique).attaque(self.EnnemiLogique)
+            self.EnnemiRectangle = GO(self.EnnemiLogique).rectangle
         elif self.controle.is_key_down("X"):
+            
             if event.type == pygame.MOUSEBUTTONDOWN:
+                self.path = []
+                self.k = 0
                 pos = pygame.math.Vector2(pygame.mouse.get_pos())
-                newx = int(pos.x//taillecol)
-                newy = int(pos.y//taillerow)
+                self.xclick = int(pos.x//taillecol)
+                self.yclick = int(pos.y//taillerow)
+                self.IndMovePlayer = True
                 ## On récupère la position du clic de la souris
-                self.grillelogique.deplacer_element(self.JoueurLogique,newx,newy)
-                self.JoueurRectangle = pygame.Rect(self.JoueurLogique.x * taillecol, self.JoueurLogique.y * taillerow, taillecol, taillerow)
+                self.path = self.grillelogique.pathfinding(self.grillelogique.grid[self.yclick][self.xclick],self.JoueurLogique)
+                #self.DeplaLogique.Mouvement(self.JoueurLogique,self.k,path)
+                #self.grillelogique.deplacer_element(self.JoueurLogique,newx,newy)
+                #self.JoueurRectangle = GO(self.JoueurLogique).rectangle
+        elif self.controle.is_new_key_press("B"):
+            self.EnnemiLogique.lp -=1
+            self.EnnemiLogique.mort()
+            print(f"Lp ennemi restant : {self.EnnemiLogique.lp}")
+            if self.EnnemiLogique.Etat == "mort":
+                self.grillelogique.retirer_element(self.EnnemiLogique.x,self.EnnemiLogique.y)
+                self.grillelogique.print_element(self.EnnemiLogique.x,self.EnnemiLogique.y)
             
         
 
@@ -163,44 +190,21 @@ class Battle:
         if self.indicateur_path == True:
             #self.grillelogique.afficher_grille()
             self.k += 1 
-            longueur_chemin = len(self.path)
-            print(f"la longueur du chemin est:{longueur_chemin}")
-            case_actuelle = self.path[longueur_chemin -min(self.k,longueur_chemin)]
-            x = case_actuelle.x
-            y = case_actuelle.y
-            print(f"le temps self.temps est :{self.temps}")
-            try:
-                self.grillelogique.deplacer_element(self.EnnemiLogique, x, y)
-                print(f"L'indice d'évolution sur le chemin est :{self.k}")
-                
-            except ValueError as e:
-                print(f"Déplacement impossible vers ({x},{y}) : {e}")
-                print(f"L'indice d'évolution sur le chemin est :{self.k}")
+            self.DeplaLogique.Mouvement(self.EnnemiLogique,self.k,self.path)
+            self.EnnemiRectangle = GO(self.EnnemiLogique).rectangle
 
-        
-           
-
-            # Debug: afficher état du chemin et de la grille après déplacement
-            #try:
-            #    chemin_info = [(p.x, p.y, 'occ' if p.element else 'free') for p in self.path]
-            #    print("Chemin (x,y,etat):", chemin_info)
-            #except Exception as e:
-            #    print("Erreur affichage chemin:", e)
-#
-            #try:
-            #    print("Grille:")
-            #    self.grillelogique.afficher_grille()
-            #except Exception as e:
-            #    print("Erreur affichage grille:", e)
-#
-            #try:
-            #    self.grillelogique.draw_path(self.path)
-            #except Exception as e:
-            #    print("Erreur draw_path:", e)
-
-            self.EnnemiRectangle = pygame.Rect(self.EnnemiLogique.x * taillecol, self.EnnemiLogique.y * taillerow, taillecol, taillerow)
-            if longueur_chemin - self.k == 1:
+            if len(self.path) - self.k == 1:
                 self.indicateur_path = False
+                
+        if self.IndMovePlayer == True:
+            self.k += 1
+            self.DeplaLogique.Mouvement(self.JoueurLogique,self.k,self.path)
+            self.JoueurRectangle = GO(self.JoueurLogique).rectangle
+
+
+            if len(self.path) - self.k == 1:
+                
+                self.IndMovePlayer = False
     
     
 
@@ -218,15 +222,21 @@ class Battle:
             for y in range(0, height, taillerow):
                 rect = pygame.Rect((x, y), (taillecol, taillerow))
                 pygame.draw.rect(surface, "Black", rect, 1)
-        pygame.draw.rect(surface,"purple",self.JoueurRectangle)
-        pygame.draw.rect(surface,"yellow",self.EnnemiRectangle)
+
+        GO(self.JoueurLogique).Dessiner_Objet(surface)
+
+        if self.EnnemiLogique.Etat != "mort":
+            GO(self.EnnemiLogique).Dessiner_Objet(surface)
+
         for rect in self.MursRect:
             pygame.draw.rect(surface,"brown",rect)
+
         if self.indicateur_path == True:
             for point in self.pathRect:
                 pygame.draw.rect(surface,"green",point)
-                pygame.draw.rect(surface,"purple",self.JoueurRectangle)
-                pygame.draw.rect(surface,"yellow",self.EnnemiRectangle)
+                GO(self.EnnemiLogique).Dessiner_Objet(surface)
+                GO(self.JoueurLogique).Dessiner_Objet(surface)
+                #pygame.draw.rect(surface,"yellow",self.EnnemiRectangle)
 
 
         

@@ -15,7 +15,7 @@ from .Point2D import Point2D
 ## Classe fille des points, un objet est un point avec des propriétés supplémentaires
 class objet2D(Point2D):
     ### Classe fille de point2D, un objet est un point avec des propriétés supplémentaires
-    def __init__(self, x, y, nom, description, lp_max = 1,defense = 1,Etat = "no_alt",Image=None):
+    def __init__(self, x, y, nom = "Objet", description = "", lp_max = 10,defense = 1,Etat = "no_alt",Image=None):
         super(objet2D,self).__init__(x, y)
         self.nom = nom
         self.description = description
@@ -26,6 +26,7 @@ class objet2D(Point2D):
         #Image et rectangle de l'objet
         self.image = Image
         self.rect = pygame.Rect(x,y,taillecase,taillecase)
+        self.rect_img = None
         if self.image is not None:
             self.rect_img = self.image.get_rect()
             self.rect_img.center = self.rect.center
@@ -39,6 +40,7 @@ class objet2D(Point2D):
             self.lp = 0
             self.Etat = "mort"
             print(f"{self.nom} est mort.")
+            
 
     def Recevoir_degats(self, degats):
         self.lp -= degats
@@ -49,12 +51,18 @@ class objet2D(Point2D):
 
 ### Classe fille des objets, un acteur est un objet avec des statistiques de combat
 class Acteur(objet2D):
-    def __init__(self, x, y, nom, description, lp=100, defense=10):
-        super(Acteur,self).__init__(x, y, nom, description, lp, defense)
+    def __init__(self, x, y, nom ="Acteur", description = "", lp=100, defense=10,Etat = "no_alt",Image=None, atq = 1, vit = 1):
+        super(Acteur,self).__init__(x, y,nom = "Acteur", description="")
         self.nom = nom
         self.description = description
         self.lp = lp
         self.defense = defense
+        self.atq = atq
+        self.vit = vit
+        self.image = Image
+        self.Etat = Etat
+        self.rect = pygame.Rect(x,y,taillecase,taillecase)
+
 
         
 

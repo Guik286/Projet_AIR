@@ -9,10 +9,10 @@ from BrouillonBattleSys.tests.BattleState.Battlemain import Battle
 
 
 pygame.init()
-### Definition de l'imagel
+### Definition de l'image
 screen = pygame.display.set_mode((length, height))
 
-
+ 
 ## Dictionnaire des écrans
 states = {"Battle" : Battle()}
 
