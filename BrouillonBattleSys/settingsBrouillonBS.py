@@ -5,8 +5,8 @@
 length = 1200
 height = 800
 
-ncol = length//20 #Amplitude de x
-nrow = height//20 #Amplitude de Y
+ncol = 60 #Amplitude de x
+nrow = 40 #Amplitude de Y
 
 
 # Graphisme grille de combat

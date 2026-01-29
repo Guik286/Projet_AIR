@@ -1,6 +1,41 @@
 from math import sqrt
 import pygame
 from settingsBrouillonBS import *
+import random as rd
+
+
+class RegleCombat:
+    ### Classe des règles de combat
+    def __init__(self,liste_acteurs):
+        self.liste_acteurs = liste_acteurs
+        self.result = -1
+
+
+    def tirer_des(self):
+        self.result = rd.randint(0,99)
+        return self.result
+
+    def tirer_initiative(self):
+        ### Tirage d'initiative pour chaque acteur
+        i = 0
+        acteurs_actuel = []
+        self.liste_acteurs.sort(key=lambda x: x.vit, reverse=True) ## On oragnise la liste en fonction de la vitesse
+        for j in range (1,len(self.liste_acteurs)-1,1):
+            # On garde les acteurs avec la même vitesse et on tire un dés pour chacun
+
+            if self.liste_acteurs[j].vit == self.liste_acteurs[i].vit:
+                acteurs_actuel.append(self.liste_acteurs[j])
+            else:
+                i += len(acteurs_actuel) ## on garde l'info pour reprendre la boucle plus tard
+                # Tirage de dés pour les acteurs actuels
+                for a in acteurs_actuel:
+                    a.initiative = a.vit + self.tirer_des()
+                acteurs_actuel = [] #On renitialise la liste pour le prochain groupe
+
+        # Tri des acteurs par initiative décroissante
+        self.liste_acteurs.sort(key=lambda x: x.initiative, reverse=True)
+        return self.liste_acteurs
+        
 
 
 class EffetSpatiaux:
@@ -20,10 +55,12 @@ class EffetSpatiaux:
             newy = cible.y + int(direction[1]/sqrt((cible.y-source.y)**2))
         else:
             newy = cible.y
-
-        self.matrice.deplacer_element(cible,newx,newy)
-        cible.x = newx
-        cible.y = newy
+        if self.matrice.grid[newx][newy].is_occupied():
+            pass
+        else:
+            self.matrice.deplacer_element(cible,newx,newy)
+            cible.x = newx
+            cible.y = newy
         #self.EnnemiRectangle = pygame.Rect(cible.x * taillecol, cible.y * taillerow, taillecol, taillerow)
 
     def Mouvement(self,point,indice,path):
@@ -72,10 +109,16 @@ class Gestion_Acteur:
 
         if A > D :
             self.space.Knockback(cible,self.acteur)
-            cible.Recevoir_degats(A-D)
+            cible.Recevoir_degats(0)
         else:
             pass
-            
+    
+    def Pos_defensive(self):
+        self.acteur.defense += 5
+        print(f"La défense de {self.acteur.nom} augmente à {self.acteur.defense}")
+
+    
+
 
 
 

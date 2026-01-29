@@ -62,6 +62,7 @@ class Acteur(objet2D):
         self.image = Image
         self.Etat = Etat
         self.rect = pygame.Rect(x,y,taillecase,taillecase)
+        self.initiative = 0
 
 
         

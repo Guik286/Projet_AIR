@@ -49,8 +49,8 @@ class Point2D:
     ### Pour le pathfinding il devra connaitre ses voisins
 
     def get_voisins(self, grille):
-        self.voisins = [grille.grid[self.y + dy][self.x + dx] if 0 <= self.x + dx < grille.largeur and 0 <= self.y + dy < grille.hauteur else None
-                        for dy in [-1, 0, 1] for dx in [-1, 0, 1] if (dx != 0 or dy != 0)]
+        self.voisins = [grille.grid[self.x + dx][self.y + dy] if 0 <= self.x + dx < grille.largeur and 0 <= self.y + dy < grille.hauteur else None
+                        for dx in [-1, 0, 1] for dy in [-1, 0, 1] if (dx != 0 or dy != 0)]
 
         return self.voisins
     

@@ -6,9 +6,9 @@ from BrouillonBattleSys.tests.BattleState.Map.MapLogique.MatriceLogique import G
 from settingsBrouillonBS import *
 from random import randint as rd
 
-from BrouillonBattleSys.KeysManager import KeysManager
 
-from BattleSysteme import EffetSpatiaux, GraphObjet as GO, Gestion_Acteur as GA
+
+from BattleSysteme import EffetSpatiaux, GraphObjet as GO, Gestion_Acteur as GA, RegleCombat as RC
 
 class Battle:
     def __init__(self):
@@ -22,7 +22,7 @@ class Battle:
 
         ### Ici la map logique ##########################
         ## Hérité de classe
-        self.grillelogique = GrilleCombat(nrow,ncol)
+        self.grillelogique = GrilleCombat(ncol,nrow)
         ### Systeme de combat 
 
         self.DeplaLogique = EffetSpatiaux(self.grillelogique)
@@ -30,6 +30,8 @@ class Battle:
         
         self.grillelogique.placer_element(self.JoueurLogique)
         self.Relation = GA(self.JoueurLogique,self.grillelogique)
+
+        
 
         ### Graphisme : 
 
@@ -54,7 +56,7 @@ class Battle:
         #### Pour les gros test
         for i in range(4):
             x,y = rd(1,8),rd(1,8)
-            self.Murs.append(Point2D(x,y,f'Mur{i}'))
+            self.Murs.append(objet2D(x,y,f'Mur{i}','Un mur infranchissable',lp_max=10,defense=1,Image=None))
             self.MursRect.append(pygame.Rect(self.Murs[i].x*taillecol,self.Murs[i].y*taillerow,taillecol,taillerow))
 
         
@@ -63,7 +65,7 @@ class Battle:
 
 
         ######### Acteurs logiques ##################
-        self.EnnemiLogique = objet2D(9,9,"Ennemi","Un Ennemi",10,1)
+        self.EnnemiLogique = Acteur(9,9,"Ennemi","Un Ennemi",10,1,"no_alt",None,2,10)
         self.grillelogique.placer_element(self.EnnemiLogique)
 
 
@@ -103,6 +105,10 @@ class Battle:
 
 
         print(f"Les points de vie de l'ennemi sont:{self.EnnemiLogique.lp}")
+
+        print("Initialisation du système de contrôle")
+        print(f"Liste initiative : {RC([self.JoueurLogique,self.EnnemiLogique]).tirer_initiative()}")
+
 
         
 
@@ -161,7 +167,8 @@ class Battle:
                 self.yclick = int(pos.y//taillerow)
                 self.IndMovePlayer = True
                 ## On récupère la position du clic de la souris
-                self.path = self.grillelogique.pathfinding(self.grillelogique.grid[self.yclick][self.xclick],self.JoueurLogique)
+                print(self.xclick,self.yclick)
+                self.path = self.grillelogique.pathfinding(self.grillelogique.grid[self.xclick][self.yclick],self.JoueurLogique)
                 #self.DeplaLogique.Mouvement(self.JoueurLogique,self.k,path)
                 #self.grillelogique.deplacer_element(self.JoueurLogique,newx,newy)
                 #self.JoueurRectangle = GO(self.JoueurLogique).rectangle

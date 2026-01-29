@@ -7,7 +7,7 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.dirname(__file__))))
 from Data.settings import *
 from math import sqrt
 from Game_f.graphisme.states.acteurs.acteur import Acteur
-from Game_f.mechs.logique.LogiqueCombat.Point2D import Point2D
+from BrouillonBattleSys.tests.BattleState.Entites.EntitesLogique.Point2D import Point2D
 from queue import PriorityQueue
 
 
@@ -24,15 +24,15 @@ class GrilleCombat:
     def __init__(self, largeur, hauteur):
         self.largeur = largeur
         self.hauteur = hauteur
-        self.grid = [[Point2D(x, y) for x in range(largeur)] for y in range(hauteur)]
+        self.grid = [[Point2D(x, y) for y in range(hauteur)] for x in range(largeur)]
         self.grid[0][0].initialisation(self)  # Initialisation des éléments à None
 
 
     ## Element existe?
 
     def print_element(self, x, y):
-        if self.grid[y][x].element is not None:
-            print(self.grid[y][x].element.nom)
+        if self.grid[x][y].element is not None:
+            print(self.grid[x][y].element.nom)
         else:
             print("Il n'y a aucun élément ici")
 
@@ -43,7 +43,7 @@ class GrilleCombat:
         x = element.x
         y = element.y
         if 0 <= x < self.largeur and 0 <= y < self.hauteur:
-            self.grid[y][x].element = element
+            self.grid[x][y].element = element
             element.x = x
             element.y = y
             print(f"l'élément ({x},{y}) a été placé")
@@ -55,7 +55,7 @@ class GrilleCombat:
     ### Méthode pour retirer un élément de la grille
     def retirer_element(self, x, y):
         if 0 <= x < self.largeur and 0 <= y < self.hauteur:
-            self.grid[y][x].element = None
+            self.grid[x][y].element = None
         else:
             raise ValueError("Coordonnées hors de la grille")
         
@@ -64,12 +64,12 @@ class GrilleCombat:
     def deplacer_element(self, element, x2, y2):
         if not (0 <= x2 < self.largeur and 0 <= y2 < self.hauteur):
             raise ValueError("Coordonnées hors de la grille")
-        if not self.grid[y2][x2].element:
+        if not self.grid[x2][y2].element:
             ## On peut garder en mémoire les différentes modifications apportés à l'élément ou duppliquer l'élément et effacer l'ancien. 
             ## On duplique l'élément à la nouvelle position (permet de garder l'état de l'élément en mémoire sur le script)
-            self.grid[y2][x2].element = self.grid[element.y][element.x].element
+            self.grid[x2][y2].element = self.grid[element.x][element.y].element
             ## On efface l'ancien
-            self.grid[element.y][element.x].element = None
+            self.grid[element.x][element.y].element = None
             ## On met à jour les coordonnées de l'objet "élément"
             element.x = x2
             element.y = y2
@@ -95,8 +95,8 @@ class GrilleCombat:
         compte = 0
         EnsOuvert = PriorityQueue()
         # Use the grid cell objects for start/end to keep keys consistent
-        start_cell = self.grid[start.y][start.x]
-        end_cell = self.grid[end.y][end.x]
+        start_cell = self.grid[start.x][start.y]
+        end_cell = self.grid[end.x][end.y]
 
         EnsOuvert.put((0, compte, start_cell))
         came_from = {}
@@ -126,7 +126,7 @@ class GrilleCombat:
                 # cout_deplacement indexed as [dy+1][dx+1]
                 dx = voisin.x - current.x
                 dy = voisin.y - current.y
-                cost = voisin.cout_deplacement[dy + 1][dx + 1]
+                cost = voisin.cout_deplacement[dx + 1][dy + 1]
                 if cost is not None:
                     tentative_g_score = g_score[current] + cost
 
