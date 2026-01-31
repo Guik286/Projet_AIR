@@ -33,6 +33,10 @@ class objet2D(Point2D):
         self.Etat = Etat  # Etat de l'objet (ex: "no_alt", "altéré", "cassé", etc.)
         self.hit = False
 
+        ### Temps 
+
+        self.horloge = 0  ### Horloge interne pour les actions temporelles
+
 
 
     def mort(self):
@@ -51,18 +55,32 @@ class objet2D(Point2D):
 
 ### Classe fille des objets, un acteur est un objet avec des statistiques de combat
 class Acteur(objet2D):
-    def __init__(self, x, y, nom ="Acteur", description = "", lp=100, defense=10,Etat = "no_alt",Image=None, atq = 1, vit = 1):
+    def __init__(self, x, y, nom ="Acteur", description = "", lp=100, defense=10,Etat = "no_alt",Image=None, FORCE = 1, vit = 1,PA_max=10):
         super(Acteur,self).__init__(x, y,nom = "Acteur", description="")
         self.nom = nom
         self.description = description
         self.lp = lp
         self.defense = defense
-        self.atq = atq
+        self.FORCE = FORCE
+        self.atq = FORCE * 2
         self.vit = vit
         self.image = Image
         self.Etat = Etat
         self.rect = pygame.Rect(x,y,taillecase,taillecase)
         self.initiative = 0
+        self.PA_max = PA_max
+        self.PA = 0
+
+
+    #### Les PA se generent au cours du temps, on va creer un essai simple
+    def generer_PA(self,dt):
+        self.horloge += dt
+        
+        if self.horloge >= 1000:  ### 1 seconde
+            self.PA += 5  ### 5 PA par seconde
+            self.horloge = 0
+        if self.PA > self.PA_max:
+            self.PA = self.PA_max
 
 
         

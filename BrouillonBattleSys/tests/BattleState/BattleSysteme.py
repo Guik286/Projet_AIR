@@ -9,11 +9,19 @@ class RegleCombat:
     def __init__(self,liste_acteurs):
         self.liste_acteurs = liste_acteurs
         self.result = -1
+        self.avantage = 0
+        self.Action_validée = False
 
 
     def tirer_des(self):
         self.result = rd.randint(0,99)
         return self.result
+    
+    def Action_validée(self,stat_actif,stat_passif):
+        self.avantage = 0
+        score_actif = (stat_actif - self.tirer_des())/10
+        score_passif = (stat_passif - self.tirer_des())/10
+        
 
     def tirer_initiative(self):
         ### Tirage d'initiative pour chaque acteur
@@ -35,6 +43,8 @@ class RegleCombat:
         # Tri des acteurs par initiative décroissante
         self.liste_acteurs.sort(key=lambda x: x.initiative, reverse=True)
         return self.liste_acteurs
+
+
         
 
 
@@ -76,6 +86,24 @@ class EffetSpatiaux:
         except ValueError as e:
             print(f"Déplacement impossible vers ({x},{y}) : {e}")
             print(f"L'indice d'évolution sur le chemin est :{indice}")
+    
+    def reduction_chemin(self,path, acteur):
+        ### Réduction du chemin en fonction des PA disponibles
+        ### On veut juste soustraire 5 PA a l'acteur par case
+        nouveau_path = []
+        k = acteur.PA // 5  ### Nombre de cases que l'acteur peut parcourir
+        if not k == 0:
+            nouveau_path = path[:k+1]  ### On prend les k premières cases du chemin
+            acteur.PA -= k * 5  ### On soustrait les PA utilisés
+            print(f"Les PA restants de {acteur.nom} sont de {acteur.PA}")
+        else:
+            print(f"{acteur.nom} n'a pas assez de PA pour se déplacer.")
+            nouveau_path = [path[0]]  ### On reste sur la case actuelle
+        print("Nouveau chemin calculé:" + str([p for p in nouveau_path]))
+
+        return nouveau_path
+
+        
 
     
 

@@ -26,7 +26,7 @@ class Battle:
         ### Systeme de combat 
 
         self.DeplaLogique = EffetSpatiaux(self.grillelogique)
-        self.JoueurLogique = Acteur(9,10,"Joueur","Un Joueur fort et courageux!",100,15,"no_alt",None,5,1)
+        self.JoueurLogique = Acteur(9,10,"Joueur","Un Joueur fort et courageux!",100,15,"no_alt",None,5,1, 100)
         
         self.grillelogique.placer_element(self.JoueurLogique)
         self.Relation = GA(self.JoueurLogique,self.grillelogique)
@@ -98,6 +98,9 @@ class Battle:
 
         self.temps = 0
         self.screen = pygame.Surface((1000, 800))
+
+        ## Animation (le chemin joueur ne parviens pas à la derniere case)
+        self.AnimStop = 0
         
         ## Pathfinding
         self.k = 1
@@ -142,7 +145,6 @@ class Battle:
                 self.pathRect.append(pygame.Rect(point.x * taillecol, point.y * taillerow, taillecol, taillerow))
             if len(self.path) > 2:
                 self.indicateur_path = True
-            self.controle.input = False
 
         elif self.controle.is_new_key_press("select"):
             self.pause_joueur = True
@@ -157,18 +159,22 @@ class Battle:
         elif self.controle.is_new_key_press("A"):
             GA(self.JoueurLogique,self.grillelogique).attaque(self.EnnemiLogique)
             self.EnnemiRectangle = GO(self.EnnemiLogique).rectangle
-        elif self.controle.is_key_down("X"):
-            
-            if event.type == pygame.MOUSEBUTTONDOWN:
+        elif event.type == pygame.MOUSEBUTTONDOWN:
+                self.grillelogique.print_element(self.JoueurLogique.x,self.JoueurLogique.y)
                 self.path = []
                 self.k = 0
                 pos = pygame.math.Vector2(pygame.mouse.get_pos())
                 self.xclick = int(pos.x//taillecol)
                 self.yclick = int(pos.y//taillerow)
-                self.IndMovePlayer = True
                 ## On récupère la position du clic de la souris
-                print(self.xclick,self.yclick)
+                
                 self.path = self.grillelogique.pathfinding(self.grillelogique.grid[self.xclick][self.yclick],self.JoueurLogique)
+                self.path = self.DeplaLogique.reduction_chemin(self.path,self.JoueurLogique)
+                if len(self.path) <= 1:
+                    print("Sur place.")
+                    self.IndMovePlayer = False
+                else:
+                    self.IndMovePlayer = True
                 #self.DeplaLogique.Mouvement(self.JoueurLogique,self.k,path)
                 #self.grillelogique.deplacer_element(self.JoueurLogique,newx,newy)
                 #self.JoueurRectangle = GO(self.JoueurLogique).rectangle
@@ -194,6 +200,10 @@ class Battle:
     ### Horloge, fournira l'ATB et autres systemes temporels ###
     def horloge(self, dt):
         self.temps += dt
+
+        ## Generer des PA pour le joueur
+        self.JoueurLogique.generer_PA(dt)
+        
         if self.indicateur_path == True:
             #self.grillelogique.afficher_grille()
             self.k += 1 
@@ -206,12 +216,21 @@ class Battle:
         if self.IndMovePlayer == True:
             self.k += 1
             self.DeplaLogique.Mouvement(self.JoueurLogique,self.k,self.path)
+            
             self.JoueurRectangle = GO(self.JoueurLogique).rectangle
 
 
-            if len(self.path) - self.k == 1:
+            if len(self.path) == self.k:
                 
                 self.IndMovePlayer = False
+                
+
+                
+                
+                #On creer un repère dans le temps pour eviter les deplacements instantanés
+
+                 # 500 ms de delai entre chaque deplacement
+
     
     
 
@@ -221,7 +240,7 @@ class Battle:
     def draw(self, surface):
         surface.fill((255, 255, 255))
         font = pygame.font.Font(None, 30)
-        text = font.render(f'Temps: {int(self.temps/1000)}s', True, (0, 0, 0))
+        text = font.render(f'Temps: {int(self.temps/1000)}s', True, (0, 0, 0)) # 1.38 empirique deviation quelques centiemes de secondes après 20 secondes
         pygame.draw.rect(surface,pygame.Color("White"),self.grillegraphique)
 
         ## Grille

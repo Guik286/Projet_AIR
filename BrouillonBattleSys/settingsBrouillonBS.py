@@ -2,11 +2,11 @@
 
 #Parametres ecran pygame
 
-length = 1200
-height = 800
+length = 600
+height = 400
 
-ncol = 60 #Amplitude de x
-nrow = 40 #Amplitude de Y
+ncol = 20 #Amplitude de x
+nrow = 20 #Amplitude de Y
 
 
 # Graphisme grille de combat

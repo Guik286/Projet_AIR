@@ -53,7 +53,7 @@ class KeysManager :
             current_time = pg.time.get_ticks()
             if event.key == pg.K_ESCAPE:
                 self.arreturgence = True
-            elif current_time - self._last_pressed_time > 200:
+            elif current_time - self._last_pressed_time > 250:
                 for but, keys in self._key_map.items():
                     if event.key in keys:
                         self._set_key(but)
