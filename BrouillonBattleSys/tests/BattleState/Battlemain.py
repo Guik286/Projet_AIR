@@ -65,7 +65,7 @@ class Battle:
 
 
         ######### Acteurs logiques ##################
-        self.EnnemiLogique = Acteur(9,9,"Ennemi","Un Ennemi",10,1,"no_alt",None,2,10)
+        self.EnnemiLogique = Acteur(0,0,"Ennemi","Un Ennemi",10,1,"no_alt",None,2,10)
         self.grillelogique.placer_element(self.EnnemiLogique)
 
 
@@ -166,10 +166,13 @@ class Battle:
                 pos = pygame.math.Vector2(pygame.mouse.get_pos())
                 self.xclick = int(pos.x//taillecol)
                 self.yclick = int(pos.y//taillerow)
+
                 ## On récupère la position du clic de la souris
                 
                 self.path = self.grillelogique.pathfinding(self.grillelogique.grid[self.xclick][self.yclick],self.JoueurLogique)
-                self.path = self.DeplaLogique.reduction_chemin(self.path,self.JoueurLogique)
+                self.limite = self.DeplaLogique.reduction_chemin(self.JoueurLogique) + 1
+
+
                 if len(self.path) <= 1:
                     print("Sur place.")
                     self.IndMovePlayer = False
@@ -202,27 +205,49 @@ class Battle:
         self.temps += dt
 
         ## Generer des PA pour le joueur
-        self.JoueurLogique.generer_PA(dt)
+        self.JoueurLogique.Barre_action(dt)
+        self.JoueurLogique.Barre_resolution(dt)
+        self.JoueurLogique.generer_PA()
+
+        #Ennemi
+        self.EnnemiLogique.Barre_action(dt)
+        self.EnnemiLogique.Barre_resolution(dt)
+        
+
+
+        ### Comportement ennemi simple : deplace vers le joueur des qu'il a assez de PA pour faire une action
+        self.EnnemiLogique.IA_Ennemi(dt,self.grillelogique,self.DeplaLogique,self.JoueurLogique)
+
+        self.EnnemiRectangle = GO(self.EnnemiLogique).rectangle
         
         if self.indicateur_path == True:
             #self.grillelogique.afficher_grille()
             self.k += 1 
             self.DeplaLogique.Mouvement(self.EnnemiLogique,self.k,self.path)
-            self.EnnemiRectangle = GO(self.EnnemiLogique).rectangle
+            #self.EnnemiRectangle = GO(self.EnnemiLogique).rectangle
 
             if len(self.path) - self.k == 1:
                 self.indicateur_path = False
                 
         if self.IndMovePlayer == True:
-            self.k += 1
-            self.DeplaLogique.Mouvement(self.JoueurLogique,self.k,self.path)
-            
-            self.JoueurRectangle = GO(self.JoueurLogique).rectangle
-
-
-            if len(self.path) == self.k:
-                
+            if self.k + 1 <= self.limite:
+                self.k += 1
+                print(f"Déplacement numéro {self.k} du joueur.")
+                if self.grillelogique.grid[self.xclick][self.yclick].element == self.EnnemiLogique:
+                    self.JoueurLogique.get_voisins(self.grillelogique)
+                    if self.grillelogique.grid[self.xclick][self.yclick] in self.JoueurLogique.voisins:
+                        print("Attaque possible !")
+                        GA(self.JoueurLogique,self.grillelogique).attaque(self.EnnemiLogique)
+                        self.EnnemiRectangle = GO(self.EnnemiLogique).rectangle
+                        self.IndMovePlayer = False
+                        return
+                self.DeplaLogique.Mouvement(self.JoueurLogique,self.k,self.path)
+                self.JoueurRectangle = GO(self.JoueurLogique).rectangle
+            else:
                 self.IndMovePlayer = False
+
+
+
                 
 
                 
@@ -240,7 +265,7 @@ class Battle:
     def draw(self, surface):
         surface.fill((255, 255, 255))
         font = pygame.font.Font(None, 30)
-        text = font.render(f'Temps: {int(self.temps/1000)}s', True, (0, 0, 0)) # 1.38 empirique deviation quelques centiemes de secondes après 20 secondes
+        text = font.render(f'Temps: {int(self.temps)}s', True, (0, 0, 0)) # 1.38 empirique deviation quelques centiemes de secondes après 20 secondes
         pygame.draw.rect(surface,pygame.Color("White"),self.grillegraphique)
 
         ## Grille

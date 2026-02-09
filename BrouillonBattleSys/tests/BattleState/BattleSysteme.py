@@ -17,10 +17,7 @@ class RegleCombat:
         self.result = rd.randint(0,99)
         return self.result
     
-    def Action_validée(self,stat_actif,stat_passif):
-        self.avantage = 0
-        score_actif = (stat_actif - self.tirer_des())/10
-        score_passif = (stat_passif - self.tirer_des())/10
+
         
 
     def tirer_initiative(self):
@@ -76,7 +73,7 @@ class EffetSpatiaux:
     def Mouvement(self,point,indice,path):
         longueur_chemin = len(path) ## Longueur du path a suivre pour l'indexation
         print(f"la longueur du chemin est:{longueur_chemin}")
-        case_actuelle = path[longueur_chemin -min(indice,longueur_chemin)] ### Pour ordre décroissant et stop a longueur chemin (s'arrête a 1)
+        case_actuelle = path[longueur_chemin - min(indice,longueur_chemin)] ### Pour ordre décroissant et stop a longueur chemin (s'arrête a 1)
         x = case_actuelle.x
         y = case_actuelle.y
         try:
@@ -87,21 +84,15 @@ class EffetSpatiaux:
             print(f"Déplacement impossible vers ({x},{y}) : {e}")
             print(f"L'indice d'évolution sur le chemin est :{indice}")
     
-    def reduction_chemin(self,path, acteur):
+    def reduction_chemin(self, acteur):
         ### Réduction du chemin en fonction des PA disponibles
         ### On veut juste soustraire 5 PA a l'acteur par case
-        nouveau_path = []
         k = acteur.PA // 5  ### Nombre de cases que l'acteur peut parcourir
-        if not k == 0:
-            nouveau_path = path[:k+1]  ### On prend les k premières cases du chemin
-            acteur.PA -= k * 5  ### On soustrait les PA utilisés
-            print(f"Les PA restants de {acteur.nom} sont de {acteur.PA}")
-        else:
-            print(f"{acteur.nom} n'a pas assez de PA pour se déplacer.")
-            nouveau_path = [path[0]]  ### On reste sur la case actuelle
-        print("Nouveau chemin calculé:" + str([p for p in nouveau_path]))
-
-        return nouveau_path
+        print(f"L'acteur {acteur.nom} peut se déplacer de {k} cases.")
+        if k > 0:
+            acteur.PA -= k * 5
+            print(f"Il reste {acteur.PA} PA à {acteur.nom} après déplacement.")
+        return k
 
         
 
@@ -137,7 +128,7 @@ class Gestion_Acteur:
 
         if A > D :
             self.space.Knockback(cible,self.acteur)
-            cible.Recevoir_degats(0)
+            cible.Recevoir_degats(1)
         else:
             pass
     

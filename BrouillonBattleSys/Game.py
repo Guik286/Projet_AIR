@@ -35,7 +35,7 @@ class Game:
                     running = False
 
             self.screen.fill((0, 0, 0))
-            self.maj_horloge(pygame.time.Clock().tick(60))
+            self.maj_horloge(pygame.time.Clock().tick(60)/1000)
             self.Affichage()
             self.evenements()
             pygame.display.update()
