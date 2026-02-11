@@ -3,7 +3,7 @@ import pygame
 import sys
 import os
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.dirname(__file__))))
-from Data.settings import *
+from BrouillonBattleSys.settingsBrouillonBS import *
 
 class Point2D:
     ### Un point sert de support aux classes filles, il permet de gérer les coordonnées

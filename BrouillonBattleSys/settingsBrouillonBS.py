@@ -1,3 +1,4 @@
+import pygame
 #### Parametres graphiques du système de combat ####
 
 #Parametres ecran pygame

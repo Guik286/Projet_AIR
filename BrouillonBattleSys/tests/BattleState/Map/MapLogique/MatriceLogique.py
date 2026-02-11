@@ -4,9 +4,9 @@ import pygame
 import sys
 import os
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.dirname(__file__))))
-from Data.settings import *
+from BrouillonBattleSys.settingsBrouillonBS import *
 from math import sqrt
-from Game_f.graphisme.states.acteurs.acteur import Acteur
+from BrouillonBattleSys.tests.BattleState.Entites.EntitesLogique.Player2D import Acteur
 from BrouillonBattleSys.tests.BattleState.Entites.EntitesLogique.Point2D import Point2D
 from queue import PriorityQueue
 

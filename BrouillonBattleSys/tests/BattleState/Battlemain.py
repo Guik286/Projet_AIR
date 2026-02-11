@@ -1,6 +1,7 @@
 import pygame
 from BrouillonBattleSys.tests.BattleState.Entites.EntitesLogique.Point2D import Point2D
-from BrouillonBattleSys.tests.BattleState.Entites.EntitesLogique.Objet2D import objet2D, Acteur
+from BrouillonBattleSys.tests.BattleState.Entites.EntitesLogique.Objet2D import objet2D
+from BrouillonBattleSys.tests.BattleState.Entites.EntitesLogique.Player2D import Acteur
 
 from BrouillonBattleSys.tests.BattleState.Map.MapLogique.MatriceLogique import GrilleCombat
 from settingsBrouillonBS import *
@@ -205,18 +206,15 @@ class Battle:
         self.temps += dt
 
         ## Generer des PA pour le joueur
-        self.JoueurLogique.Barre_action(dt)
-        self.JoueurLogique.Barre_resolution(dt)
-        self.JoueurLogique.generer_PA()
+        self.JoueurLogique.Action()
 
-        #Ennemi
-        self.EnnemiLogique.Barre_action(dt)
-        self.EnnemiLogique.Barre_resolution(dt)
+
+
         
 
 
         ### Comportement ennemi simple : deplace vers le joueur des qu'il a assez de PA pour faire une action
-        self.EnnemiLogique.IA_Ennemi(dt,self.grillelogique,self.DeplaLogique,self.JoueurLogique)
+        #self.EnnemiLogique.IA_Ennemi(dt,self.grillelogique,self.DeplaLogique,self.JoueurLogique)
 
         self.EnnemiRectangle = GO(self.EnnemiLogique).rectangle
         
